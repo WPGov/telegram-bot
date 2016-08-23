@@ -47,7 +47,7 @@ function telegram_subscribers_cpt()
         )
     );
     register_post_type('telegram_subscribers', $args);
-    
+
     //TELEGRAM GROUPS
     $labels = array(
         'name' => _x('Subscribers', 'Post Type General Name', 'telegram-bot'),
@@ -184,4 +184,47 @@ function telegram_command_extra_save_meta_box_data($post_id)
     }
 }
 add_action('save_post', 'telegram_command_extra_save_meta_box_data');
+
+add_action( 'post_submitbox_misc_actions', 'telegram_metabox' );
+function telegram_metabox($post) {
+
+    echo '<div class="misc-pub-section misc-pub-section-last">
+         <span id="timestamp">'
+         . '<label><input type="checkbox" value="1" name="telegram_m_send" id="telegram_m_send" /> '.__('Send to Telegram', 'telegram-bot').'</label>
+          <textarea name="telegram_m_send_content" id="telegram_m_send_content" rows="4" style="width: 100%;font-size: 0.9em;margin-top: 5px;">'.html_entity_decode(telegram_option('posttemplate')).'
+</textarea>
+
+<script type="text/javascript">
+jQuery(document).ready(function($){
+
+	$( "#telegram_m_send_content" ).prop( "hidden", !$("#telegram_m_send").is(":checked") );
+
+	$("#telegram_m_send").on("change", function() {
+		$( "#telegram_m_send_content" ).prop( "hidden", !$("#telegram_m_send").is(":checked") );
+	});
+});
+</script>
+
+               </span></div>';
+}
+
+function telegram_metabox_save($postid) {
+
+    if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE )
+          return;
+
+    if ( empty($postid) ) return;
+
+    if ( isset($_POST['telegram_m_send'] ) ) {
+      $text =  $_POST['telegram_m_send_content'];
+      $text =  str_replace( '%TITLE%', get_the_title( $postid ), $text);
+      $text =  str_replace( '%LINK%', get_permalink( $postid ), $text);
+      $content = apply_filters('the_content', get_post( $postid )->post_content );
+      $text =  str_replace( '%EXCERPT%',  wp_trim_words( $content, $num_words = 50, $more = '...' ), $text);
+
+        telegram_sendmessagetoall( $text );
+    }
+
+}
+add_action( 'save_post', 'telegram_metabox_save', 10, 3 );
 ?>

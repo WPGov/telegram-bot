@@ -23,7 +23,7 @@
 		$CPT = 'telegram_groups';
 		$GROUP = true; $PRIVATE = false;
 	} else {
-		telegram_log('EXCEPTION', './\.', json_encode($json, TRUE));
+		telegram_log('EXCEPTION', 'CHAT TYPE', json_encode($json, TRUE));
 		die();
 	}
 

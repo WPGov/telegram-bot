@@ -1,6 +1,6 @@
 === Telegram Bot & Channel ===
 Contributors: Milmor
-Version:	1.4.1
+Version:	1.5
 Stable tag:	trunk
 Author:		Marco Milesi
 Author URI:   https://profiles.wordpress.org/milmor/
@@ -24,7 +24,8 @@ https://www.youtube.com/watch?v=frdub3fTdqk
 = Bot Features =
 * Instant replies (we use secure webhooks)
 * Custom keyboards
-* Support private chats, groups and channels
+* Instant send of new posts/pages/post_types with configurable template
+* Support private chats, groups, supergroups and channels
 * Create unlimited commands. You can set your own responders for /$commands
 * Create alias for commands
 * Add shortcodes to /$commands replies
@@ -45,11 +46,10 @@ https://www.youtube.com/watch?v=frdub3fTdqk
 = Zapier = 
 Zapier makes it easy to automate tasks between web apps. For example:
 
-* send a news published on your website (based on RSS)
+* send a news published on a website (based on RSS)
 * send the weather to your subscribers, every day
 * inform users when you upload an image on Instagram
-
-and much more… With 400+ Zapier Apps supported! More info on [wptele.ga/?p=442](https://wptele.ga/?p=442).
+* and much more… With 400+ Zapier Apps supported! More info on [wptele.ga/?p=442](https://wptele.ga/?p=442).
 
 https://www.youtube.com/watch?v=14aEV0_FHFk
 
@@ -156,8 +156,20 @@ function telegram_get_reply_markup_filter_custom( $id ) {
 6. plugin options
 7. website registration on [wptele.ga](https://wptele.ga) (if you don't have SSL)
 8. example from [CosenzApp_bot](http://telegram.me/CosenzApp_bot)
+9. send to telegram function for all post types
 
 == Changelog ==
+
+= 1.5 23.08.2016 =
+* Added instant send when publishing new content with configurable template
+* This version changes the sendmessage function because WordPress now turned post links to title automatically.
+* Please test your dynamic commands if you extended the plugin via php
+* Minor improvements
+
+= 1.4.2 17.08.2016 =
+* Minor bugfix
+* Minor improvements
+* WP 4.6 compatibility check
 
 = 1.4.1 06.08.2016 =
 * Fixed error while parsing placeholders for supergroup
@@ -300,29 +312,9 @@ function telegram_get_reply_markup_filter_custom( $id ) {
 = 0.7.1 - 13.09.2015 =
 * Compatibility fix for PHP5.3
 
-
-
-
-
-
 = 0.7 - 13.09.2015 =
-
-
-
-
-
 * Added **Send Message** panel
 * Fixed XSS vulnerability (thanks to Roman Ananyev)
 
-
-
-
-
-
 = 0.1 - 07.09.2015 =
-
-
-
-
-
 * First Commit

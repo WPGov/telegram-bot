@@ -3,7 +3,7 @@
 Plugin Name:  Telegram Bot & Channel
 Plugin URI:  http://wptele.ga
 Description: Stream your content to Telegram. Create your bot, Manage your responders and Send your news directly from your WordPress website! Zapier compatible
-Version:      1.4.1
+Version:      1.5
 Author:       Marco Milesi
 Author URI:  http://marcomilesi.ml
 Contributors: Milmor
@@ -29,26 +29,13 @@ function register_my_custom_menu_page()
 	add_submenu_page('telegram_main', 'Log', 'Log', 'manage_options', 'telegram_log', 'telegram_log_panel');
 }
 
-function telegram_main_panel()
-{
-	require 'main-panel.php';
+function telegram_main_panel() { require 'main-panel.php'; }
 
-}
+function telegram_settings_panel() { require 'settings-panel.php'; }
 
-function telegram_settings_panel()
-{
-	require 'settings-panel.php';
+function telegram_send_panel() { require 'send-panel.php'; }
 
-}
-
-function telegram_send_panel()
-{
-	require 'send-panel.php';
-
-}
-
-function telegram_log_panel()
-{
+function telegram_log_panel() {
 	if (isset($_GET['tbclear'])) {
 		delete_option('wp_telegram_log');
 		wp_redirect(esc_url(remove_query_arg('tbclear')));
@@ -76,7 +63,7 @@ function wp_telegram_start()
 
 	require 'columns.php';
     require 'admin-messages.php';
-    
+
     $arraytbpv = get_plugin_data ( __FILE__ );
     $nuova_versione = $arraytbpv['Version'];
 
@@ -89,11 +76,7 @@ function wp_telegram_start()
 
 add_action('admin_init', 'wp_telegram_start');
 
-function telegram_defaults()
-{
-	require 'defaults.php';
-
-}
+function telegram_defaults() { require 'defaults.php'; }
 
 function telegram_plugin_parse_request()
 {
@@ -152,7 +135,7 @@ function telegram_parsetext($text, $type, $chat_id) {
         $text = str_replace('<b>', '*', $text);
         $text = str_replace('</b>', '*', $text);
     }
-    
+
     $o = get_page_by_title( $chat_id, OBJECT, 'telegram_subscribers');
     if ($o) {
         $text = str_replace('%FIRST_NAME%', get_post_meta($o->ID, 'telegram_first_name', true), $text);
@@ -167,16 +150,17 @@ function telegram_parsetext($text, $type, $chat_id) {
         }
     }
     //return $text; return do_shortcode( $text ); return html_entity_decode( apply_filters('the_content', $text ) );
-    return strip_tags( html_entity_decode( apply_filters('the_content', $text ) ) );
+		return strip_tags( html_entity_decode( do_shortcode( $text ) ) );
+    //return strip_tags( html_entity_decode( apply_filters('the_content', $text ) ) );
 }
 
 function telegram_get_reply_markup($id) {
-	
+
     $value = apply_filters( 'telegram_get_reply_markup_filter', $id );
     if ( $value != $id ) {
-        return $value; 
+        return $value;
     }
-    
+
     $kt = get_post_meta( $id, 'telegram_kt', true );
     if ( $id && $kt ) {
         if ( get_post_meta( $id, 'telegram_otk', true ) ) {
@@ -188,23 +172,23 @@ function telegram_get_reply_markup($id) {
             'keyboard' => telegram_get_keyboard_layout( $kt ),
             'resize_keyboard' => true,
             'one_time_keyboard' => $otk
-        ); 
+        );
     } else if ( telegram_option('keyboard') ) {
         return array(
             'keyboard' => telegram_get_keyboard_layout( telegram_option('keyboard') ),
             'resize_keyboard' => true,
             'one_time_keyboard' => false
-        ); 
+        );
     } else if ( $id ) {
         return array(
             'hide_keyboard' => true,
-        ); 
+        );
     }
 }
 
 function telegram_sendmessage($chat_id, $text) {
-    if ( !$text ) { return; }
-    
+    if ( !$text || !$chat_id ) { return; }
+
     if (  is_int( $text ) && get_post_type( $text ) == 'telegram_commands' ) {
         $reply_markup = json_encode( telegram_get_reply_markup($text) );
         $text = get_post_field('post_content', $text);
@@ -212,22 +196,22 @@ function telegram_sendmessage($chat_id, $text) {
         $reply_markup = json_encode( telegram_get_reply_markup( 0 ) );
     }
     $text = telegram_parsetext($text, 'text', $chat_id);
-    
+
     if ( !$text ) { return; }
-    
+
     $url = 'https://api.telegram.org/bot' . telegram_option('token') . '/sendMessage';
     $parse_mode = 'Markdown';
-    
+
     if ( $reply_markup != 'null' ) {
         $data = compact('chat_id', 'text', 'parse_mode', 'reply_markup');
     } else {
         $data = compact('chat_id', 'text', 'parse_mode');
     }
-    
+
 	file_get_contents($url . '?' . http_build_query($data));
-    
+
     telegram_increase_dispatch();
-    
+
     if ( $http_response_header['0'] == 'HTTP/1.1 400 Bad Request') {
         telegram_log('####', $chat_id, 'Error: incorrect parameters due to: '.$http_response_header['0'].' '.implode(' ', $data ));
         return false;
@@ -236,20 +220,20 @@ function telegram_sendmessage($chat_id, $text) {
         wp_delete_post( telegram_getid( $chat_id ) );
         return false;
     }
-    
+
     telegram_log('<<<< TXT', $chat_id, $text);
     return true;
 }
 
 function telegram_sendphoto($chat_id, $caption, $photo) {
-    
+
     if (  is_int( $caption ) && get_post_type( $caption ) == 'telegram_commands' ) {
         $reply_markup = json_encode( telegram_get_reply_markup($caption) );
         $caption = get_post_field('post_content', $caption);
     } else {
         $reply_markup = json_encode( telegram_get_reply_markup( 0 ) );
     }
-    
+
     $caption = telegram_parsetext($caption, 'photo', $chat_id);
 	$url = 'https://api.telegram.org/bot' . telegram_option('token') . '/sendPhoto';
 	$photo = getFullPath($photo);
@@ -276,16 +260,16 @@ function telegram_increase_dispatch() {
 }
 
 function telegram_sendmessagetoall($message) {
-    
+
     if ( telegram_option('channelusername') ) {
         telegram_sendmessage( telegram_option('channelusername'), $message);
     }
-    
+
     $args = array(
         'post_type' => 'telegram_groups',
         'post_per_page' => -1
     );
-    
+
      query_posts($args);
 
         $count = 0;
@@ -295,12 +279,12 @@ function telegram_sendmessagetoall($message) {
             $count++;
         endwhile;
 
-    
+
     $args = array(
         'post_type' => 'telegram_subscribers',
         'post_per_page' => -1
     );
-    
+
     query_posts($args);
 
         $count = 0;
@@ -340,7 +324,7 @@ function telegram_getid($title) {
 	if (!$page) {
 		$page = get_page_by_title( $title, OBJECT, 'telegram_groups' );
 	}
-    if ( $page ) { 
+    if ( $page ) {
         return $page->ID;
     } else {
         return false;

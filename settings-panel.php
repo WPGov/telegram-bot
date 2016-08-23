@@ -25,10 +25,10 @@ telegram_log( '####', __('"WebHook" updated', 'telegram-bot'), $url);
         <td>
           <input disabled id="apikey" type="text" name="wp_telegram_apikey" value="<?php echo get_option('wp_telegram_apikey'); ?>" size="55" />
           <br>
-          <small>This is the unique key generated for your website. 
+          <small>This is the unique key generated for your website.
             <strong>Keep it secret!
             </strong>
-          </small> 
+          </small>
         </td>
       </tr>
       <tr valign="top">
@@ -39,12 +39,12 @@ telegram_log( '####', __('"WebHook" updated', 'telegram-bot'), $url);
         <td>
           <input id="token" type="text" name="wp_telegram[token]" value="<?php echo $options['token']; ?>" size="55" />
           <br>
-          <small>Your Telegram Bot authentication key. Get one from 
+          <small>Your Telegram Bot authentication key. Get one from
             <a href="https://wptele.ga/?p=101" target="_blank">BotFather
-            </a>. 
+            </a>.
             <strong>Keep it secret!
             </strong>
-          </small> 
+          </small>
         </td>
       </tr>
       <tr valign="top">
@@ -55,11 +55,11 @@ telegram_log( '####', __('"WebHook" updated', 'telegram-bot'), $url);
         </th>
         <td>
           <select name="wp_telegram[mode]">
-            <option 
+            <option
                     <?php if (!is_ssl()) { echo 'disabled'; } ?> value="0"
             <?php if ($options[ 'mode']==0 ) { echo ' selected="selected"'; } ?>>Telegram WebHooks
             </option>
-          <option value="1" 
+          <option value="1"
                   <?php if ($options[ 'mode']==1 ) { echo ' selected="selected"'; } ?>>WPTele.ga Platform
       </option>
       </select>
@@ -72,10 +72,10 @@ echo 'You have SSL, so you are allowed to choose between your server or WPTele.g
 echo 'You are not using SSL, so you can\'t send messages using Telegram webhook. The only way is to get a WPTele.ga subscription';
 }
 ?>
-      <br>(to use WPTele.ga you need an active subscription. Get it 
+      <br>(to use WPTele.ga you need an active subscription. Get it
       <a href="https://wptele.ga" target="_blank">here
       </a>)
-    </small> 
+    </small>
     </td>
   </tr>
 <tr valign="top">
@@ -85,13 +85,13 @@ echo 'You are not using SSL, so you can\'t send messages using Telegram webhook.
     </label>
   </th>
   <td>
-    <input id="zapier" name="wp_telegram[zapier]" type="checkbox" value="1" 
+    <input id="zapier" name="wp_telegram[zapier]" type="checkbox" value="1"
            <?php checked( '1', $options[ 'zapier']); ?> />
-    <br> 
-    <small>enable zapier integration &bull; Beta &bull; 
+    <br>
+    <small>enable zapier integration &bull; Beta &bull;
       <a href="https://zapier.com/developer/invite/26805/1ec54299d4307c0b86b7417d0866ff25/">Click here to get an invite
       </a>
-    </small> 
+    </small>
   </td>
 </tr>
 <tr valign="top">
@@ -103,25 +103,25 @@ echo 'You are not using SSL, so you can\'t send messages using Telegram webhook.
   <td>
     <input id="channelusername" type="text" name="wp_telegram[channelusername]" value="<?php echo $options['channelusername']; ?>" size="55" />
     <br>
-    <small>Insert here your channel username if you want to stream messages to it. Ex. 
+    <small>Insert here your channel username if you want to stream messages to it. Ex.
       <b>@sanpellegrinoterme
       </b>
       <br>The bot must be administrator in your channel
-    </small> 
+    </small>
   </td>
 </tr>
-<tr valign="top" 
+<tr valign="top"
     <?php if (!$options[ 'debug']) { echo 'style="display:none;"'; } ?>>
 <th scope="row">
   <label for="debug">Enable Debug
   </label>
 </th>
 <td>
-  <input id="debug" name="wp_telegram[debug]" type="checkbox" value="1" 
+  <input id="debug" name="wp_telegram[debug]" type="checkbox" value="1"
          <?php checked( '1', $options[ 'debug']); ?> />
-  <br> 
+  <br>
   <small>Enable debugging. Do not use this if not asked by support!
-  </small> 
+  </small>
 </td>
 </tr>
 <tr valign="top">
@@ -131,7 +131,7 @@ echo 'You are not using SSL, so you can\'t send messages using Telegram webhook.
       <br>
       <small>
         <?php _e('for Private Conversations', 'telegram-bot'); ?>
-      </small> 
+      </small>
     </label>
   </th>
   <td>
@@ -139,7 +139,7 @@ echo 'You are not using SSL, so you can\'t send messages using Telegram webhook.
     <br>
     <small>
       <?php _e('Cannot be blank', 'telegram-bot'); ?>.
-    </small> 
+    </small>
   </td>
 </tr>
 <tr valign="top">
@@ -149,7 +149,7 @@ echo 'You are not using SSL, so you can\'t send messages using Telegram webhook.
       <br>
       <small>
         <?php _e('for Private Conversations', 'telegram-bot'); ?>
-      </small> 
+      </small>
     </label>
   </th>
   <td>
@@ -157,7 +157,7 @@ echo 'You are not using SSL, so you can\'t send messages using Telegram webhook.
     <br>
     <small>
       <?php _e('Cannot be blank', 'telegram-bot'); ?>.
-    </small> 
+    </small>
   </td>
 </tr>
 <tr valign="top">
@@ -167,14 +167,14 @@ echo 'You are not using SSL, so you can\'t send messages using Telegram webhook.
       <br>
       <small>
         <?php _e('for Private Conversations', 'telegram-bot'); ?>
-      </small> 
+      </small>
     </label>
   </th>
   <td>
     <input id="emuser" type="text" name="wp_telegram[emuser]" value="<?php echo $options['emuser']; ?>" size="55" />
     <br>
     <small>This will be shown when the command doesn't exist.
-    </small> 
+    </small>
   </td>
 </tr>
 <tr valign="top">
@@ -183,7 +183,7 @@ echo 'You are not using SSL, so you can\'t send messages using Telegram webhook.
       <?php _e('Start Message', 'telegram-bot'); ?>
       <br>
       <small>for Groups
-      </small> 
+      </small>
     </label>
   </th>
   <td>
@@ -191,7 +191,7 @@ echo 'You are not using SSL, so you can\'t send messages using Telegram webhook.
     <br>
     <small>
       <?php _e('Cannot be blank', 'telegram-bot'); ?>.
-    </small> 
+    </small>
   </td>
 </tr>
 <tr valign="top">
@@ -200,22 +200,31 @@ echo 'You are not using SSL, so you can\'t send messages using Telegram webhook.
       <?php _e('Keyboard Template', 'telegram-bot'); ?>
       <br>
       <small>for Private Conversations
-      </small> 
+      </small>
     </label>
   </th>
   <td>
     <input id="keyboard" type="text" name="wp_telegram[keyboard]" value="<?php echo $options['keyboard']; ?>" size="55" />
     <br>
-    <small>Example: 
+    <small>Example:
       <b>1,2,3;4,5,6;Text
       </b>
-    </small> 
+    </small>
   </td>
 </td>
 </tr>
+<tr valign="top">
+    <th scope="row">
+        <label for="posttemplate"><?php _e('Post Template', 'telegram-bot'); ?>
+            <br><small><?php _e('for posts broadcast', 'telegram-bot'); ?></small> </label>
+    </th>
+    <td>
+    <textarea id="posttemplate" rows="4" columns="55" class="widefat" name="wp_telegram[posttemplate]"><?php echo $options['posttemplate']; ?></textarea>
+    <br><small>Allowed placeholders: <b>%TITLE% %LINK% %EXCERPT%</b></small> </td></td>
+</tr>
 </table>
 <p class="submit">
-  <input type="submit" class="button-primary" value="<?php _e('Save Changes'); ?>" /> 
+  <input type="submit" class="button-primary" value="<?php _e('Save Changes'); ?>" />
 </p>
 </form>
 </div>
