@@ -1,6 +1,6 @@
 === Telegram Bot & Channel ===
 Contributors: Milmor
-Version:	1.5
+Version:	1.5.1
 Stable tag:	trunk
 Author:		Marco Milesi
 Author URI:   https://profiles.wordpress.org/milmor/
@@ -11,30 +11,28 @@ Tested up to: 4.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Stream your content to Telegram, create commands and build beautiful bots. Compatible with Zapier
+Complete plugin to create commands and build interactive bots for Telegram. Compatible with Zapier
 
 == Description ==
 
 Bots are simply Telegram accounts operated by software and they have AI features. With this plugin you can do anything: teach, play, search, broadcast, remind, connect, integrate with other services, or even pass commands to the Internet of Things.
 
-This plugin allows you to create a Telegram Bot to your WordPress website and send content to your subscribers or a Channel you own.
+This plugin allows you to create a Telegram Bot to your WordPress website and send content to your subscribers, groups or channel.
 
 https://www.youtube.com/watch?v=frdub3fTdqk
 
 = Bot Features =
 * Instant replies (we use secure webhooks)
-* Custom keyboards
-* Instant send of new posts/pages/post_types with configurable template
-* Support private chats, groups, supergroups and channels
-* Create unlimited commands. You can set your own responders for /$commands
+* **Custom keyboards**
+* Instant send of new **posts/pages/post_types** with configurable template
+* Supports chats, groups, supergroups and channels
+* Create unlimited commands with replies (you can include other shortcodes)
 * Create alias for commands
-* Add shortcodes to /$commands replies
 * View and manage your subscribers
 * Send manual messages
 * Create custom applicatons with **/$command $var1 $var2** format
 * Add php to /$commands (requires [Insert Php](https://wordpress.org/plugins/insert-php
 * **[Zapier](https://zapier.com)** integrated! You can create integrations with services you use!
-* Automatically send your news (requires [Zapier](https://zapier.com))
 
 = Channel Features =
 * Stream your content to your Telegram channel
@@ -63,9 +61,6 @@ If you want to be translation editor for your locale, please send your username 
 
 = Support =
 Give a look to our [faqs](https://wordpress.org/plugins/telegram-bot/faq/) or ask for [support](https://wordpress.org/support/plugin/telegram-bot). If you like this plugin, please leave a [review](https://wordpress.org/support/view/plugin-reviews/telegram-bot) or give us feedback so we can improve it!
-
-= Contributors =
-* Icon "Message" by Flaticon from Freepik (CC BY 3.0)
 
 == Installation ==
 This section describes how to install the plugin and get it working.
@@ -159,6 +154,9 @@ function telegram_get_reply_markup_filter_custom( $id ) {
 9. send to telegram function for all post types
 
 == Changelog ==
+
+= 1.5.1 23.08.2016 =
+* Critical fix for "Insert_PHP" parsing (and similar) caused by oembed conflict (thanks @websurfertech)
 
 = 1.5 23.08.2016 =
 * Added instant send when publishing new content with configurable template

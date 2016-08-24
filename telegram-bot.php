@@ -3,7 +3,7 @@
 Plugin Name:  Telegram Bot & Channel
 Plugin URI:  http://wptele.ga
 Description: Stream your content to Telegram. Create your bot, Manage your responders and Send your news directly from your WordPress website! Zapier compatible
-Version:      1.5
+Version:      1.5.1
 Author:       Marco Milesi
 Author URI:  http://marcomilesi.ml
 Contributors: Milmor
@@ -131,6 +131,8 @@ function telegram_log($action, $chat_id, $text)
 
 function telegram_parsetext($text, $type, $chat_id) {
     remove_filter( 'the_content', 'wpautop' );
+		remove_filter( 'the_content', array( $GLOBALS['wp_embed'], 'autoembed' ), 8 );
+
     if ($type == 'text') {
         $text = str_replace('<b>', '*', $text);
         $text = str_replace('</b>', '*', $text);
@@ -150,8 +152,8 @@ function telegram_parsetext($text, $type, $chat_id) {
         }
     }
     //return $text; return do_shortcode( $text ); return html_entity_decode( apply_filters('the_content', $text ) );
-		return strip_tags( html_entity_decode( do_shortcode( $text ) ) );
-    //return strip_tags( html_entity_decode( apply_filters('the_content', $text ) ) );
+		//return strip_tags( html_entity_decode( do_shortcode( $text ) ) );
+    return strip_tags( html_entity_decode( apply_filters('the_content', $text ) ) );
 }
 
 function telegram_get_reply_markup($id) {
