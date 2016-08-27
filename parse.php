@@ -28,8 +28,8 @@
 	}
 
 	telegram_log('>>>>', $USERID, $data['message']['text']);
-    
-    if (telegram_option('debug')) {
+
+    if (defined('WP_DEBUG') && true === WP_DEBUG) {
 	   telegram_log('####', 'DEBUG', json_encode($json, TRUE));
     }
 
@@ -70,7 +70,7 @@
     }
 
     do_action( 'telegram_parse', $USERID, $data['message']['text'] ); //EXPERIMENTAL
-    
+
     $ok_found = false;
     if ( $data['message']['text'] != '' ) {
         query_posts('post_type=telegram_commands&posts_per_page=-1');
@@ -78,7 +78,7 @@
             the_post();
             $lowertitle = strtolower(  get_the_title() );
             $lowermessage = strtolower( $data['message']['text'] );
-            if ( 
+            if (
                 ( $lowertitle == $lowermessage )
                 ||
                 ( strpos( $lowermessage, $lowertitle.' ' ) === 0 )
@@ -88,7 +88,7 @@
                 $ok_found = true;
 
                 if ( has_post_thumbnail( get_the_id() ) ) {
-                    $image = wp_get_attachment_image_src( get_post_thumbnail_id(), 'medium', true ); 
+                    $image = wp_get_attachment_image_src( get_post_thumbnail_id(), 'medium', true );
                     telegram_sendphoto( $USERID, get_the_id(), $image[0] );
                 }
                 else {
@@ -105,7 +105,7 @@
                 $ok_found = true;
                 telegram_sendmessage( $USERID, telegram_option('bmuser') );
                 wp_delete_post( telegram_getid( $USERID ) );
-			    break;              
+			    break;
 			default:
 			    break;
 			return;
@@ -119,5 +119,5 @@
     if ( $PRIVATE && !$ok_found ) {
          telegram_sendmessage( $USERID, telegram_option('emuser') );
     }
-    
+
 ?>

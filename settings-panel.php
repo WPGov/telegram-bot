@@ -110,20 +110,6 @@ echo 'You are not using SSL, so you can\'t send messages using Telegram webhook.
     </small>
   </td>
 </tr>
-<tr valign="top"
-    <?php if (!$options[ 'debug']) { echo 'style="display:none;"'; } ?>>
-<th scope="row">
-  <label for="debug">Enable Debug
-  </label>
-</th>
-<td>
-  <input id="debug" name="wp_telegram[debug]" type="checkbox" value="1"
-         <?php checked( '1', $options[ 'debug']); ?> />
-  <br>
-  <small>Enable debugging. Do not use this if not asked by support!
-  </small>
-</td>
-</tr>
 <tr valign="top">
   <th scope="row">
     <label for="wmuser">

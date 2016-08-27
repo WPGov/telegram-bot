@@ -3,7 +3,7 @@
 Plugin Name:  Telegram Bot & Channel
 Plugin URI:  http://wptele.ga
 Description: Stream your content to Telegram. Create your bot, Manage your responders and Send your news directly from your WordPress website! Zapier compatible
-Version:      1.5.1
+Version:      1.6
 Author:       Marco Milesi
 Author URI:  http://marcomilesi.ml
 Contributors: Milmor
@@ -227,6 +227,12 @@ function telegram_sendmessage($chat_id, $text) {
     return true;
 }
 
+function telegram_persian_convert_int($string) {
+    $persian = array('۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹');
+    $num = range(0, 9);
+    return str_replace($persian, $num, $string);
+}
+
 function telegram_sendphoto($chat_id, $caption, $photo) {
 
     if (  is_int( $caption ) && get_post_type( $caption ) == 'telegram_commands' ) {
@@ -256,6 +262,28 @@ function telegram_get_keyboard_layout($template) {
     return array_map ( function ($_) {return explode (',', $_);}, explode (';', $template) );
 }
 
+//Check if point is within a distance (max_distance required)
+function telegram_location_haversine_check ( $latitudeFrom, $longitudeFrom, $latitudeTo, $longitudeTo, $max_distance, $min_distance = 0, $earthRadius = 6371000) {
+  $distance = telegram_location_haversine_distance ( $latitudeFrom, $longitudeFrom, $latitudeTo, $longitudeTo, $earthRadius);
+  return ( $distance >= 0 && ($distance < $max_distance) );
+}
+
+//Calculate the distance
+function telegram_location_haversine_distance ( $latitudeFrom, $longitudeFrom, $latitudeTo, $longitudeTo, $earthRadius = 6371000) {
+
+  $latFrom = deg2rad($latitudeFrom);
+  $lonFrom = deg2rad($longitudeFrom);
+  $latTo = deg2rad($latitudeTo);
+  $lonTo = deg2rad($longitudeTo);
+
+  $latDelta = $latTo - $latFrom;
+  $lonDelta = $lonTo - $lonFrom;
+
+  $angle = 2 * asin(sqrt(pow(sin($latDelta / 2), 2) +
+  cos($latFrom) * cos($latTo) * pow(sin($lonDelta / 2), 2)));
+  return (int)($angle * $earthRadius);
+}
+
 function telegram_increase_dispatch() {
     $d = get_option('wp_telegram_dispatches');
     update_option( 'wp_telegram_dispatches', ++$d);
@@ -277,7 +305,7 @@ function telegram_sendmessagetoall($message) {
         $count = 0;
         while (have_posts()):
             the_post();
-            telegram_sendmessage( get_post_field( 'post_title', get_the_id() ), $message);
+            telegram_sendmessage( get_post_field( 'post_name', get_the_id() ), $message);
             $count++;
         endwhile;
 
@@ -292,7 +320,7 @@ function telegram_sendmessagetoall($message) {
         $count = 0;
         while (have_posts()):
             the_post();
-            telegram_sendmessage( get_post_field( 'post_title', get_the_id() ), $message);
+            telegram_sendmessage( get_post_field( 'post_name', get_the_id() ), $message);
             $count++;
         endwhile;
 }

@@ -41,11 +41,11 @@ function telegram_subscribers_cpt()
         'exclude_from_search' => true,
         'publicly_queryable' => true,
         'rewrite' => false,
-        'capability_type' => 'post',
-        'capabilities' => array(
-            'create_posts' => false
-        )
+        'capability_type' => 'post'
     );
+    if ( defined('WP_DEBUG') && false === WP_DEBUG) {
+      array_push($args,"capabilities", array( 'create_posts' => false ));
+    }
     register_post_type('telegram_subscribers', $args);
 
     //TELEGRAM GROUPS
@@ -88,12 +88,13 @@ function telegram_subscribers_cpt()
         'exclude_from_search' => true,
         'publicly_queryable' => true,
         'rewrite' => false,
-        'capability_type' => 'post',
-        'capabilities' => array(
-            'create_posts' => false
-        )
+        'capability_type' => 'post'
     );
+    if ( defined('WP_DEBUG') && false === WP_DEBUG) {
+      array_push($args,"capabilities", array( 'create_posts' => false ));
+    }
     register_post_type('telegram_groups', $args);
+    
     $labels = array(
         'name' => _x('Commands', 'Post Type General Name', 'telegram-bot'),
         'singular_name' => _x('Command', 'Post Type Singular Name', 'telegram-bot'),

@@ -11,7 +11,6 @@
       array('token', ''),
       array('mode', ''),
       array('zapier', ''),
-      array('debug', ''),
       array('wmgroup', 'Welcome!'),
       array('wmuser', 'Welcome, %FIRST_NAME%!'),
       array('posttemplate', '%TITLE%'.PHP_EOL.PHP_EOL.'%LINK%'),
