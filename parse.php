@@ -67,7 +67,13 @@
         telegram_sendmessage( $USERID, $page->ID );
         do_action( 'telegram_parse_location', $USERID, $data['message']['location']['latitude'], $data['message']['location']['longitude']);
         return;
-    }
+    } else if ( isset( $data['message']['photo'] ) ) {
+			do_action( 'telegram_parse_photo', $USERID, $data['message']['photo'] );
+			return;
+		} else if ( isset( $data['message']['document'] ) ) {
+			do_action( 'telegram_parse_document', $USERID, $data['message']['document'] );
+			return;
+		}
 
     do_action( 'telegram_parse', $USERID, $data['message']['text'] ); //EXPERIMENTAL
 

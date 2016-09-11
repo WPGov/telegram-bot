@@ -3,7 +3,7 @@
 Plugin Name:  Telegram Bot & Channel
 Plugin URI:  http://wptele.ga
 Description: Stream your content to Telegram. Create your bot, Manage your responders and Send your news directly from your WordPress website! Zapier compatible
-Version:      1.6
+Version:      1.7
 Author:       Marco Milesi
 Author URI:  http://marcomilesi.ml
 Contributors: Milmor
@@ -297,7 +297,8 @@ function telegram_sendmessagetoall($message) {
 
     $args = array(
         'post_type' => 'telegram_groups',
-        'post_per_page' => -1
+        'post_per_page' => -1,
+				'nopaging' => true
     );
 
      query_posts($args);
@@ -312,7 +313,8 @@ function telegram_sendmessagetoall($message) {
 
     $args = array(
         'post_type' => 'telegram_subscribers',
-        'post_per_page' => -1
+        'post_per_page' => -1,
+				'nopaging' => true
     );
 
     query_posts($args);
@@ -392,6 +394,37 @@ function telegram_get_data_array() {
     }
 
     return (array)json_decode($json, TRUE);
+}
+
+function telegram_download_file( $telegram_user_id, $file_id, $directory = '' ) {
+	$url =  telegram_geturl().'getFile?file_id='.$file_id;
+	$response = file_get_contents($url);
+
+	if (!$response) {
+		return;
+	}
+
+	$data = (array)json_decode($response, TRUE);
+	$plugin_post_id = telegram_getid( $telegram_user_id );
+	$remote_url =  'https://api.telegram.org/file/bot'.telegram_option('token').'/'.$data['result']['file_path'];
+	$local_dir = $local_url = ABSPATH.'wp-content/uploads/telegram-bot/'.$plugin_post_id.$directory;
+	$ext = pathinfo($remote_url, PATHINFO_EXTENSION);
+	$file_name = time().'.'.$ext;
+	$local_url = $local_dir.'/'.$file_name;
+	if ( !copy( $remote_url, $local_url) ) {
+		mkdir( $local_dir, 0755, true);
+		if ( !copy( $remote_url, $local_url) ) {
+			telegram_log('', $telegram_user_id, 'Cannot write file image from '.$remove_url.' to '.$local_url);
+			return false;
+		} else {
+			telegram_log('', $telegram_user_id, 'Directory created for incoming image');
+			return false;
+		}
+	} else {
+		telegram_log('', $telegram_user_id, 'Received and saved image');
+		return get_site_url() . '/wp-content/uploads/telegram-bot/'.$plugin_post_id.'/'.$file_name;
+	}
+
 }
 
 ?>

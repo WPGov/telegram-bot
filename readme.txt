@@ -1,6 +1,6 @@
 === Telegram Bot & Channel ===
 Contributors: Milmor
-Version:	1.6
+Version:	1.7
 Stable tag:	trunk
 Author:		Marco Milesi
 Author URI:   https://profiles.wordpress.org/milmor/
@@ -195,6 +195,13 @@ Both the functions calculates distances on meters. If you want another type of r
 9. send to telegram function for all post types
 
 == Changelog ==
+
+= 1.7 11.09.2016 =
+* Added php function to get and save incoming files. To be documented soon!
+* Minor changes
+
+= 1.6.1 27.08.2016 =
+* Added nopaging => true in "telegram_sendmessagetoall" function to force website post_limit override
 
 = 1.6 26.08.2016 =
 * Added harvesine algorithm for radial geolocation. Check the faqs for more informations
