@@ -1,6 +1,6 @@
 === Telegram Bot & Channel ===
 Contributors: Milmor
-Version:	1.7
+Version:	1.7.1
 Stable tag:	trunk
 Author:		Marco Milesi
 Author URI:   https://profiles.wordpress.org/milmor/
@@ -132,7 +132,19 @@ function telegramcustom_parse( $telegram_user_id, $text ) {
 ?>`
 
 = How to set up dynamic keyboards? =
-You can start from the previous custom plugin created, and add the following filter:
+You can send custom keyboards directly in php. Every keyboard can be set only when you send a message, and is kept in the client side until another keyboard is sent (in another message). You can also change this behaviour by setting the $one_time_keyboard true or false.
+
+`telegram_sendmessage( $telegram_user_id, 'Hello from the other side!'); //Message with no keyboard (or with default one if set in plugin options)
+telegram_sendmessage( $telegram_user_id, 'Hello from the other side!', telegram_build_reply_markup( '11,12,13;21,22', true )); //Message with custom keyboard`
+
+Here is the details of telegram_build_reply_markup (an array is returned):
+`telegram_build_reply_markup(
+ '11,12,13;21,22', //The keyboard template (eg. 2 row, 3 columns for the first one and two columns for the second one
+ true, // $one_time_keyboard (optional) (default false = kept until a new keyboard is sent) (true = kept until the user send something to the bot)
+ true // $resize_keyboard (optional) (default true)
+);`
+
+You can also alter keyboards for commands defined in the **admin area**. Start from the previous custom plugin created, and add the following filter:
 
 `add_filter( 'telegram_get_reply_markup_filter', 'telegram_get_reply_markup_filter_custom', 1 );
 
@@ -183,6 +195,62 @@ The second one returns a int (in meters) of the distance. $earthRadius optional.
 
 Both the functions calculates distances on meters. If you want another type of result, just change the $earthRadius.
 
+= How to get user photos? =
+We've written simple functions to let developers build everything.
+Photos are saved in **/wp-content/uploads/telegram-bot/'.$plugin_post_id.'/'.$file_name** where $plugin_post_id is the custom post type id associated with the Telegram subscription (ex. '24') and $file_name is time().$extension
+
+`<?php
+/*
+Plugin Name: Telegram Bot & Channel (Custom)
+Description: My Custom Telegram Plugin
+Author: My name
+Version: 1
+*/
+
+add_action('telegram_parse_photo','telegramcustom_parse_photo', 10, 2);
+
+function telegramcustom_parse_photo ( $telegram_user_id, $photo  ) {
+
+ $plugin_post_id = telegram_getid( $telegram_user_id );
+
+ if ( !$plugin_post_id ) {
+  return;
+ }
+
+ /*
+  Here is the dynamic processing and how to reply.
+  You can:
+   - use if, switch and everything that works in php
+   - check if $text is made of multiple words (create an array from $text)
+   - customize and code other actions (ex. create WordPress post is $telegram_user_id is your id)
+ */
+ 
+ /*
+   $photo[2]['file_id'] is only one of available sizes. You should make sure that this size exist, or check for another size.
+   $photo[1]['file_id'] has lower resolution
+ */
+ $url = telegram_download_file( $telegram_user_id, $photo[2]['file_id'] ); //Fetch and save photo to your server
+ 
+ if ( $url ) { //$url is the local url because photo is already saved
+
+  //You can save the entry in your db
+  global $wpdb;
+  $arr = array( 'telegram_id' => $telegram_user_id, 'plugin_post_id' => $plugin_post_id, 'url' => $url );
+  
+  $wpdb->insert(
+   $wpdb->prefix . 'your_table_name_that_must_already_exist', $arr, array( '%s' )
+  );
+
+  //Or save it as custom field and use it for a Finite State Machine
+  update_post_meta( $plugin_post_id, 'telegram_custom_last_photo_received', $url );
+
+  telegram_sendmessage( $telegram_user_id, 'Photo received. Thank you!');
+}
+
+?>`
+
+Another example, that is a "emergency bot" created for the mid-italy earthquake (24 august 2016) is available on [GitHub](https://github.com/milesimarco/terremotocentroitalia-bot-telegram/)
+
 == Screenshots ==
 1. plugin dashboard
 2. subscribers list
@@ -196,8 +264,14 @@ Both the functions calculates distances on meters. If you want another type of r
 
 == Changelog ==
 
-= 1.7 11.09.2016 =
-* Added php function to get and save incoming files. To be documented soon!
+= 1.7.1 16.09.2016 =
+* Improved telegram_sendmessage() with ability to define custom keyboards via php
+* Added function to build a reply_markup that can be used as third parameter in telegram_sendmessage()
+* More dev-info in our faqs!
+
+= 1.7 14.09.2016 =
+* Added php function to get and save incoming files. More info in our faqs!
+* We're planning a **free** server upgrade for non-SSL users. Stay tuned: the best is yet to come!
 * Minor changes
 
 = 1.6.1 27.08.2016 =
