@@ -428,13 +428,10 @@ function telegram_download_file( $telegram_user_id, $file_id, $directory = '' ) 
 			return false;
 		} else {
 			telegram_log('', $telegram_user_id, 'Directory created for incoming image');
-			return false;
 		}
-	} else {
-		telegram_log('', $telegram_user_id, 'Received and saved image');
-		return get_site_url() . '/wp-content/uploads/telegram-bot/'.$plugin_post_id.'/'.$file_name;
 	}
-
+	telegram_log('', $telegram_user_id, 'Received and saved image');
+	return get_site_url() . '/wp-content/uploads/telegram-bot/'.$plugin_post_id.'/'.$file_name;
 }
 
 ?>
