@@ -1,17 +1,17 @@
 === Telegram Bot & Channel ===
 Contributors: Milmor
-Version:	1.7.1
+Version:	2.1.1
 Stable tag:	trunk
 Author:		Marco Milesi
 Author URI:   https://profiles.wordpress.org/milmor/
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=F2JK36SCXKTE2
 Tags: telegram, bot, newsletter, channel, group, automatic, stream
 Requires at least: 3.8
-Tested up to: 4.6
+Tested up to: 4.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Complete plugin to create commands and build interactive bots for Telegram. Compatible with Zapier
+The only plugin you'll ever need to build bots for Telegram and channel broadcast. Zapier compatible.
 
 == Description ==
 
@@ -21,15 +21,15 @@ This plugin allows you to create a Telegram Bot with your WordPress website and 
 
 https://www.youtube.com/watch?v=jdQkFRYAoR0
 
-> Please consider a [donation](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=F2JK36SCXKTE2) to make the plugin even better.
+> [BotPress.org](https://botpress.org) ~ Follow our [Telegram channel](https://telegram.me/botpressorg)
 
 = Bot Features =
 * Instant replies (on secure webhooks)
-* **Custom keyboards**
+* **Keyboards** and **inline buttons** supported
 * Instant send of new **posts/pages/post_types** with configurable template
+* Support for scheduled posts broadcast
 * Supports chats, groups, supergroups and channels
-* Create unlimited commands with replies (you can include other shortcodes)
-* Create alias for commands
+* Create unlimited commands with custom replies (compatible with shortcodes and php)
 * View and manage your subscribers
 * **Get and dynamically reply to users geolocation** with harvesine algorithm
 * Send manual messages
@@ -42,7 +42,7 @@ https://www.youtube.com/watch?v=jdQkFRYAoR0
 
 **Note:** your bot must be administrator of your channel for sending messages
 
-**Warning:** due to Telegram limitation you need **SSL certificate** to manage a Telegram Bot. If you don't have one, register at [wptele.ga](https://wptele.ga) as a second step after installing the plugin. The service is free!
+**Warning:** due to Telegram limitation you need **SSL certificate** to manage a Telegram Bot. If you don't have one, just choose [botpress.org](https://botpress.org) in plugin options. **This is a free opt-in feature that will send some data to our server**.
 
 = Zapier = 
 Zapier makes it easy to automate tasks between web apps. For example:
@@ -50,7 +50,7 @@ Zapier makes it easy to automate tasks between web apps. For example:
 * send a news published on a website (based on RSS)
 * send the weather to your subscribers, every day
 * inform users when you upload an image on Instagram
-* and much more… With 400+ Zapier Apps supported! More info on [wptele.ga/?p=442](https://wptele.ga/?p=442).
+* and much more… With 400+ Zapier Apps supported!
 
 https://www.youtube.com/watch?v=14aEV0_FHFk
 
@@ -74,18 +74,18 @@ This section describes how to install the plugin and get it working.
 2. Activate the plugin through the 'Plugins' menu in WordPress
 3. Go to the Telegram settings page
 4. Go through the steps and hit update!
-5. If you don't have HTTPS, signup at [wptele.ga](https://wptele.ga) and register your website
 
 == Frequently Asked Questions ==
+Documentation is available on [www.botpress.org/docs](https://www.botpress.org/docs)
 
 = How do I create a bot? =
-[wptele.ga/?p=101](https://wptele.ga/?p=101)
+[www.botpress.org/docs/telegram/how-to-create-a-bot](https://www.botpress.org/docs/telegram/how-to-create-a-bot/)
 
 = How can i let users subscribe? =
-[wptele.ga/?p=440](https://wptele.ga/?p=440)
+[www.botpress.org/docs/telegram/how-do-users-subscribe](https://www.botpress.org/docs/telegram/how-do-users-subscribe/)
 
 = What is Zapier and how do i integrate it? =
-[wptele.ga/?p=442](https://wptele.ga/?p=442)
+[www.botpress.org/docs/telegram/zapier-integration](https://www.botpress.org/docs/telegram/zapier-integration/)
 
 = How to enable debug mode? =
 If you are a developer, or just want a more complete "Telegram > Log" enable WP_DEBUG mode.
@@ -252,17 +252,68 @@ function telegramcustom_parse_photo ( $telegram_user_id, $photo  ) {
 Another example, that is a "emergency bot" created for the mid-italy earthquake (24 august 2016) is available on [GitHub](https://github.com/milesimarco/terremotocentroitalia-bot-telegram/)
 
 == Screenshots ==
-1. plugin dashboard
-2. subscribers list
-3. commands list
-4. command autoresponder
+1. Plugin dashboard
+2. Subscribers list
+3. Commands list
+4. Autoresponders
 5. Zapier integration
 6. plugin options
-7. website registration on [wptele.ga](https://wptele.ga) (if you don't have SSL)
-8. example from [CosenzApp_bot](http://telegram.me/CosenzApp_bot)
-9. send to telegram function for all post types
+7. Dynamic repliles and inline buttons example from [IcBrendola_bot](http://telegram.me/IcBrendola_bot)
+8. Keyboard example from [CosenzApp_bot](http://telegram.me/CosenzApp_bot)
+9. Post broadcasting (all post types)
 
 == Changelog ==
+
+= 2.1.1 4.03.2017 =
+* Added %CHAT_ID% placeholder for post template (useful for Google Analytics campaign)
+* **Fixed** bug with publish_post when using %EXCERPT% (thanks @jsbmand)
+* Minor improvements
+
+= 2.0.7 7.02.2017 =
+* Fixed bug when parsing content containing "x"
+
+= 2.0.6 13.01.2017 =
+* **Fix**: possibile problems with future_post_publish when hooking "telegram_send_post"
+* **Improved** perfomance 
+
+= 2.0.4 29.12.2016 =
+* Fix: markdown parameter was incorrectly added while sending to channel (error 400)
+
+= 2.0.3 21.12.2016 =
+* Added filters to publish_post and publish_future_post to allow plugin's customizations via actions
+* Fixed bug that printed a false error "incorrect parameters due to: HTTP/1.1 200 OK" in log
+* Fixed bug causing errors while sending to groups in some cases
+
+= 2.0.1 16.12.2016 =
+* Fixed bug with widget channel link - Thanks @aghorbanmehr
+* Improved widget style
+* Improved main panel
+* Added localhost warning in plugin options (plugin can't receive messages in offline environments)
+* Improved readme.txt
+
+= 2.0 14.12.2016 =
+* Follow our new Telegram channel [telegram.me/botpressorg](https://telegram.me/botpressorg)
+* Tested with WP 4.7
+* This is a major change that requires attention: info [www.botpress.org/?p=2021](https://www.botpress.org/?p=2021)
+* New "bypass" platform for non-SSL users: [www.botpress.org](https://www.botpress.org). Account registration no-longer required because it's now done automatically by the plugin (as **opt-in** service)
+* Added **inline buttons** support
+* Added targeting system to send messages differently between users/groups/channel
+* Added widget to let users follow your bot/channel
+* Improved speed, filters and actions
+* Bugfixes and UI improvements
+
+= 1.8.3 5.12.2016 =
+* Bugfix
+* New PHP filters for subscriber and group views (check source code to find more)
+
+= 1.8.1 16.11.2016 =
+* Regression bugfix: new broadcast system didn't work with custom post types
+* Minor performance boost
+
+= 1.8 15.11.2016 =
+* Posts broadcast completely rewritten due to occasional bugs
+* Scheduled posts broadcast added
+* Version 2.0 in progress: stay tuned!
 
 = 1.7.1 16.09.2016 =
 * Improved telegram_sendmessage() with ability to define custom keyboards via php

@@ -6,8 +6,10 @@
         $columns['sdate'] ='Subscribe Date';
         unset($columns['cb']);
         unset($columns['date']);
-
-        return $columns;
+        if ( defined('WP_DEBUG') && false === WP_DEBUG) {
+            unset($columns['title']);
+        }
+        return apply_filters( 'manage_edit-telegram_subscribers_columns_filter', $columns );
     }
     add_filter('manage_edit-telegram_subscribers_columns', 't_subscribers_columns');
     function t_groups_columns($columns) {
@@ -18,11 +20,13 @@
         if ( defined('WP_DEBUG') && false === WP_DEBUG) {
             unset($columns['title']);
         }
-        return $columns;
+        return apply_filters( 'manage_edit-telegram_groups_columns_filter', $columns );
     }
     add_filter('manage_edit-telegram_groups_columns', 't_groups_columns');
-    add_filter('bulk_actions-edit-telegram_subscribers', '__return_empty_array');
-    add_filter('bulk_actions-edit-telegram_groups', '__return_empty_array');
+
+    add_filter('bulk_actions-edit-telegram_subscribers', function($actions){ unset( $actions['edit'] ); return apply_filters( 'bulk_actions-edit-telegram_subscribers_filter', $actions ); });
+    add_filter('bulk_actions-edit-telegram_groups', function($actions){ unset( $actions['edit'] ); return apply_filters( 'bulk_actions-edit-telegram_groups_filter', $actions ); });
+
     add_action('manage_telegram_subscribers_posts_custom_column', 't_manage_columns', 10, 2);
     add_action('manage_telegram_groups_posts_custom_column', 't_manage_columns', 10, 2);
     function t_manage_columns($column, $post_id) {

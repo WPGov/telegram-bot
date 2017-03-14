@@ -1,8 +1,8 @@
 <?php
-
 	$json = file_get_contents('php://input');
 
 	if (!$json) {
+		telegram_log('returned','','');
 		return;
 	}
 
@@ -18,16 +18,23 @@
 		$USERID = $data['message']['from']['id'];
 		$CPT = 'telegram_subscribers';
 		$PRIVATE = true; $GROUP = false;
+		$COMMAND = $data['message']['text'];
 	} else if ( $data['message']['chat']['type'] == 'group' || $data['message']['chat']['type'] == 'supergroup' ) {
 		$USERID = $data['message']['chat']['id'];
 		$CPT = 'telegram_groups';
 		$GROUP = true; $PRIVATE = false;
+		$COMMAND = $data['message']['text'];
+	} else if ( $data['callback_query']['message']['text'] ) {
+		$USERID = $data['callback_query']['message']['chat']['id'];
+		$CPT = 'telegram_subscribers';
+		$PRIVATE = true; $GROUP = false;
+		$COMMAND = $data['callback_query']['data'];
 	} else {
 		telegram_log('EXCEPTION', 'CHAT TYPE', json_encode($json, TRUE));
 		die();
 	}
 
-	telegram_log('>>>>', $USERID, $data['message']['text']);
+	telegram_log('>>>>', $USERID, $COMMAND);
 
     if (defined('WP_DEBUG') && true === WP_DEBUG) {
 	   telegram_log('####', 'DEBUG', json_encode($json, TRUE));
@@ -68,22 +75,22 @@
         do_action( 'telegram_parse_location', $USERID, $data['message']['location']['latitude'], $data['message']['location']['longitude']);
         return;
     } else if ( isset( $data['message']['photo'] ) ) {
-			do_action( 'telegram_parse_photo', $USERID, $data['message']['photo'] );
-			return;
-		} else if ( isset( $data['message']['document'] ) ) {
-			do_action( 'telegram_parse_document', $USERID, $data['message']['document'] );
-			return;
-		}
+		do_action( 'telegram_parse_photo', $USERID, $data['message']['photo'] );
+		return;
+	} else if ( isset( $data['message']['document'] ) ) {
+		do_action( 'telegram_parse_document', $USERID, $data['message']['document'] );
+		return;
+	}
 
-    do_action( 'telegram_parse', $USERID, $data['message']['text'] ); //EXPERIMENTAL
+    do_action( 'telegram_parse', $USERID, $COMMAND ); //EXPERIMENTAL
 
     $ok_found = false;
-    if ( $data['message']['text'] != '' ) {
+    if ( $COMMAND != '' ) {
         query_posts('post_type=telegram_commands&posts_per_page=-1');
         while (have_posts()):
             the_post();
             $lowertitle = strtolower(  get_the_title() );
-            $lowermessage = strtolower( $data['message']['text'] );
+            $lowermessage = strtolower( $COMMAND );
             if (
                 ( $lowertitle == $lowermessage )
                 ||

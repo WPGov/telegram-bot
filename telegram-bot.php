@@ -3,7 +3,7 @@
 Plugin Name:  Telegram Bot & Channel
 Plugin URI:  http://wptele.ga
 Description: Stream your content to Telegram. Create your bot, Manage your responders and Send your news directly from your WordPress website! Zapier compatible
-Version:      1.7.1
+Version:      2.1.1
 Author:       Marco Milesi
 Author URI:  http://marcomilesi.ml
 Contributors: Milmor
@@ -11,29 +11,17 @@ Text Domain:  telegram-bot
 Domain Path: /languages
 */
 
-add_action( 'plugins_loaded', 'telegram_load_textdomain' );
-function telegram_load_textdomain() { load_plugin_textdomain( 'telegram-bot' ); }
+add_action( 'plugins_loaded', function(){ load_plugin_textdomain( 'telegram-bot' );} );
 
-require 'custom-post-types.php';
-
-add_action('admin_menu', 'register_my_custom_menu_page');
-
-function register_my_custom_menu_page()
-{
-	add_menu_page('Telegram Dashboard', 'Telegram', 'manage_options', 'telegram_main', 'telegram_main_panel', 'dashicons-megaphone' , 25);
+add_action('admin_menu', function(){
+	add_menu_page('Telegram Dashboard', 'Telegram', 'manage_options', 'telegram_main', function(){require 'panel/main.php';}, 'dashicons-megaphone' , 25);
 	add_submenu_page('telegram_main', __('Subscribers', 'telegram-bot'), __('Subscribers', 'telegram-bot'), 'manage_options', 'edit.php?post_type=telegram_subscribers');
 	add_submenu_page('telegram_main', __('Groups', 'telegram-bot'), __('Groups', 'telegram-bot'), 'manage_options', 'edit.php?post_type=telegram_groups');
-    add_submenu_page('telegram_main', __('New message', 'New message'), __('New message', 'telegram-bot'), 'manage_options', 'telegram_send', 'telegram_send_panel');
+    add_submenu_page('telegram_main', __('New message', 'New message'), __('New message', 'telegram-bot'), 'manage_options', 'telegram_send', function(){require 'panel/send.php';});
 	add_submenu_page('telegram_main', __('Commands', 'telegram-bot'), __('Commands', 'telegram-bot'), 'manage_options', 'edit.php?post_type=telegram_commands');
-	add_submenu_page('telegram_main', __('Settings', 'telegram-bot'), __('Settings', 'telegram-bot'), 'manage_options', 'telegram_settings', 'telegram_settings_panel');
+	add_submenu_page('telegram_main', __('Settings', 'telegram-bot'), __('Settings', 'telegram-bot'), 'manage_options', 'telegram_settings', function(){require 'panel/settings.php';});
 	add_submenu_page('telegram_main', 'Log', 'Log', 'manage_options', 'telegram_log', 'telegram_log_panel');
-}
-
-function telegram_main_panel() { require 'main-panel.php'; }
-
-function telegram_settings_panel() { require 'settings-panel.php'; }
-
-function telegram_send_panel() { require 'send-panel.php'; }
+});
 
 function telegram_log_panel() {
 	if (isset($_GET['tbclear'])) {
@@ -57,9 +45,8 @@ function telegram_log_panel() {
 </table></div>';
 }
 
-function wp_telegram_start()
-{
-	register_setting('wp_telegram_options', 'wp_telegram');
+add_action('admin_init', function() {
+    register_setting('wp_telegram_options', 'wp_telegram');
 
 	require 'columns.php';
     require 'admin-messages.php';
@@ -71,34 +58,38 @@ function wp_telegram_start()
         telegram_defaults();
         update_option( 'wp_telegram_version', $nuova_versione );
     }
+});
 
-}
+require 'custom-post-types.php';
 
-add_action('admin_init', 'wp_telegram_start');
+add_action( 'init', function() {
+    foreach ( get_post_types( array( 'public' => true, '_builtin' => false ), 'names' ) as $cpt ) {
+        add_action( 'future_'.$cpt, 'telegram_on_post_scheduled', 10, 2 );
+        add_action( 'publish_'.$cpt, 'telegram_send_post_notification', 10, 2 );
+        add_action( 'publish_future_'.$cpt, 'telegram_send_post_notification_future', 10, 2 );
+    }
+});
 
 function telegram_defaults() { require 'defaults.php'; }
 
-function telegram_plugin_parse_request()
-{
+add_action('template_redirect', function(){
 	global $wp_query;
 	if ( isset( $_GET[get_option('wp_telegram_apikey')] ) && $wp_query->query[ get_option('wp_telegram_apikey') ]) {
+        status_header( 200 );
 		require 'parse.php';
 	} else if ( isset( $_GET['zap'] ) && $wp_query->query['zap']) {
         if ($_GET['zap'] == get_option('wp_telegram_apikey') && telegram_option('zapier')) {
+            status_header( 200 );
             require 'zapier.php';
         }
 	}
-}
+});
 
-add_action('template_redirect', 'telegram_plugin_parse_request');
-add_filter('query_vars', 'telegram_query_vars');
-
-function telegram_query_vars($vars)
-{
+add_filter('query_vars', function($vars){
 	$vars[] = get_option('wp_telegram_apikey');
     $vars[] = 'zap';
 	return $vars;
-}
+});
 
 function telegram_option($name)
 {
@@ -110,17 +101,13 @@ function telegram_option($name)
 	return false;
 }
 
-add_filter('user_can_richedit', 'disable_for_cpt');
-
-function disable_for_cpt($default)
-{
+add_filter('user_can_richedit', function($default){
 	global $post;
 	if ('telegram_commands' == get_post_type($post)) return false;
 	return $default;
-}
+});
 
-function telegram_log($action, $chat_id, $text)
-{
+function telegram_log($action, $chat_id, $text) {
 	update_option('wp_telegram_log', '<tr>
             <td>' . $action . '</td>
             <td>' . date('m/d/Y H:i:s ', time()) . '</td>
@@ -131,12 +118,14 @@ function telegram_log($action, $chat_id, $text)
 
 function telegram_parsetext($text, $type, $chat_id) {
     remove_filter( 'the_content', 'wpautop' );
-		remove_filter( 'the_content', array( $GLOBALS['wp_embed'], 'autoembed' ), 8 );
+	remove_filter( 'the_content', array( $GLOBALS['wp_embed'], 'autoembed' ), 8 );
 
     if ($type == 'text') {
         $text = str_replace('<b>', '*', $text);
         $text = str_replace('</b>', '*', $text);
     }
+
+    $text = str_replace('%CHAT_ID%', $chat_id, $text);
 
     $o = get_page_by_title( $chat_id, OBJECT, 'telegram_subscribers');
     if ($o) {
@@ -153,7 +142,8 @@ function telegram_parsetext($text, $type, $chat_id) {
     }
     //return $text; return do_shortcode( $text ); return html_entity_decode( apply_filters('the_content', $text ) );
 		//return strip_tags( html_entity_decode( do_shortcode( $text ) ) );
-    return strip_tags( html_entity_decode( apply_filters('the_content', $text ) ) );
+
+    return str_replace('×', 'x', str_replace('_', '\_', strip_tags( html_entity_decode( apply_filters('the_content', $text ) ) )));
 }
 
 function telegram_get_reply_markup($id) {
@@ -164,6 +154,8 @@ function telegram_get_reply_markup($id) {
     }
 
     $kt = get_post_meta( $id, 'telegram_kt', true );
+    $ikt = get_post_meta( $id, 'telegram_ikt', true );
+
     if ( $id && $kt ) {
         if ( get_post_meta( $id, 'telegram_otk', true ) ) {
             $otk = true;
@@ -174,6 +166,10 @@ function telegram_get_reply_markup($id) {
             'keyboard' => telegram_get_keyboard_layout( $kt ),
             'resize_keyboard' => true,
             'one_time_keyboard' => $otk
+        );
+    } else if ( $id && $ikt ) {
+        return array(
+            'inline_keyboard' => telegram_get_inline_keyboard_layout( $ikt ),
         );
     } else if ( telegram_option('keyboard') ) {
         return array(
@@ -188,7 +184,7 @@ function telegram_get_reply_markup($id) {
     }
 }
 
-function telegram_sendmessage( $chat_id, $text, $reply_markup = false ) {
+function telegram_sendmessage( $chat_id, $text, $reply_markup = false, $disable_web_page_preview = false, $disable_notification = false ) {
     if ( !$text || !$chat_id ) { return; }
 
     if ( $reply_markup ) {
@@ -199,6 +195,7 @@ function telegram_sendmessage( $chat_id, $text, $reply_markup = false ) {
     } else {
         $reply_markup = json_encode( telegram_get_reply_markup( 0 ) );
     }
+
     $text = telegram_parsetext($text, 'text', $chat_id);
 
     if ( !$text ) { return; }
@@ -206,12 +203,15 @@ function telegram_sendmessage( $chat_id, $text, $reply_markup = false ) {
     $url = 'https://api.telegram.org/bot' . telegram_option('token') . '/sendMessage';
     $parse_mode = 'Markdown';
 
-    if ( $reply_markup != 'null' ) {
-        $data = compact('chat_id', 'text', 'parse_mode', 'reply_markup');
+    if ( preg_match('/@/', $chat_id) ) { // Channel 
+         $data = compact('chat_id', 'text', 'disable_web_page_preview', 'disable_notification');
+    } else if ( $reply_markup != 'null' ) {
+        $data = compact('chat_id', 'text', 'parse_mode', 'reply_markup', 'disable_web_page_preview', 'disable_notification');
     } else {
-        $data = compact('chat_id', 'text', 'parse_mode');
+        $data = compact('chat_id', 'text', 'parse_mode', 'disable_web_page_preview', 'disable_notification');
     }
 
+telegram_log('test', '0', $text);
 	file_get_contents($url . '?' . http_build_query($data));
 
     telegram_increase_dispatch();
@@ -272,6 +272,11 @@ function telegram_get_keyboard_layout($template) {
     return array_map ( function ($_) {return explode (',', $_);}, explode (';', $template) );
 }
 
+function telegram_get_inline_keyboard_layout($template) {
+    return (array)json_decode( $template );
+    //return [[ [ 'text' => 'Some button text 1', 'callback_data' => '1' ], [ 'text' => 'Some button text 2', 'callback_data' => '2' ] ]];
+}
+
 //Check if point is within a distance (max_distance required)
 function telegram_location_haversine_check ( $latitudeFrom, $longitudeFrom, $latitudeTo, $longitudeTo, $max_distance, $min_distance = 0, $earthRadius = 6371000) {
   $distance = telegram_location_haversine_distance ( $latitudeFrom, $longitudeFrom, $latitudeTo, $longitudeTo, $earthRadius);
@@ -300,27 +305,12 @@ function telegram_increase_dispatch() {
 }
 
 function telegram_sendmessagetoall($message) {
+    telegram_sendmessage_channel($message);
+    telegram_sendmessage_groups($message);
+    telegram_sendmessage_users($message);
+}
 
-    if ( telegram_option('channelusername') ) {
-        telegram_sendmessage( telegram_option('channelusername'), $message);
-    }
-
-    $args = array(
-        'post_type' => 'telegram_groups',
-        'post_per_page' => -1,
-				'nopaging' => true
-    );
-
-     query_posts($args);
-
-        $count = 0;
-        while (have_posts()):
-            the_post();
-            telegram_sendmessage( get_post_field( 'post_name', get_the_id() ), $message);
-            $count++;
-        endwhile;
-
-
+function telegram_sendmessage_users($message) {
     $args = array(
         'post_type' => 'telegram_subscribers',
         'post_per_page' => -1,
@@ -332,9 +322,32 @@ function telegram_sendmessagetoall($message) {
         $count = 0;
         while (have_posts()):
             the_post();
-            telegram_sendmessage( get_post_field( 'post_name', get_the_id() ), $message);
+            telegram_sendmessage( get_post_field( 'post_title', get_the_id() ), $message);
             $count++;
         endwhile;
+}
+
+function telegram_sendmessage_groups($message) {
+    $args = array(
+        'post_type' => 'telegram_groups',
+        'post_per_page' => -1,
+				'nopaging' => true
+    );
+
+     query_posts($args);
+
+        $count = 0;
+        while (have_posts()):
+            the_post();
+            telegram_sendmessage( get_post_field( 'post_title', get_the_id() ), $message);
+            $count++;
+        endwhile;
+}
+
+function telegram_sendmessage_channel($message) {
+    if ( telegram_option('channelusername') ) {
+        telegram_sendmessage( telegram_option('channelusername'), $message);
+    }
 }
 
 function getFullPath($url)
@@ -373,7 +386,8 @@ function telegram_getid($title) {
     }
 }
 
-function wpt_quicktagsadd() {
+
+add_action( 'admin_print_footer_scripts', function() {
     global $post;
     if (wp_script_is('quicktags') && $post->post_type == 'telegram_commands' ){
 ?>
@@ -384,17 +398,15 @@ function wpt_quicktagsadd() {
     </script>
 <?php
     }
-}
-add_action( 'admin_print_footer_scripts', 'wpt_quicktagsadd' );
+} );
 
-add_filter( 'quicktags_settings', 'wpt_quicktags', 10, 1 );
-function wpt_quicktags( $qtInit ) {
+add_filter( 'quicktags_settings', function($qtInit) {
     global $post;
     if ( $post && $post->post_type == 'telegram_commands' ) {
         $qtInit['buttons'] = ',';
     }
     return $qtInit;
-}
+}, 10, 1 );
 
 function telegram_get_data_array() {
     $json = file_get_contents('php://input');
@@ -436,5 +448,10 @@ function telegram_download_file( $telegram_user_id, $file_id, $directory = '' ) 
 	}
 
 }
+
+add_action('widgets_init', function() {
+    require 'widget.php';
+    register_widget('telegram_widget');
+});
 
 ?>
