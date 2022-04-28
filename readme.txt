@@ -1,50 +1,49 @@
 === Telegram Bot & Channel ===
 Contributors: Milmor
-Version:	2.1.1
+Version:	3.4.9
 Stable tag:	trunk
 Author:		Marco Milesi
 Author URI:   https://profiles.wordpress.org/milmor/
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=F2JK36SCXKTE2
-Tags: telegram, bot, newsletter, channel, group, automatic, stream
+Tags: telegram, bot, newsletter, channel, group, automatic, stream, classicpress
 Requires at least: 3.8
-Tested up to: 4.7
+Requires PHP: 5.6
+Tested up to: 5.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-The only plugin you'll ever need to build bots for Telegram and channel broadcast. Zapier compatible.
+Simple yet complete framework to broadcast content to Telegram, build interactive bots and boost your omnichannel customer experience. Zapier compatible.
 
 == Description ==
 
-Bots are simply Telegram accounts operated by software and they have AI features. With this plugin you can do anything: teach, play, search, broadcast, remind, connect, integrate with other services, or even pass commands to the Internet of Things.
+With this plugin you can do anything: teach, play, search, broadcast, remind, connect or even integrate with Your services.
 
-This plugin allows you to create a Telegram Bot with your WordPress website and send content to your subscribers, groups or channel.
+🤖 **Bot builder**: create interactive autoresponders for users and groups
+📣 **Broadcast**: send messages to your channels and bot
 
-https://www.youtube.com/watch?v=jdQkFRYAoR0
+https://youtu.be/8fckoWSmAks
 
-> [BotPress.org](https://botpress.org) ~ Follow our [Telegram channel](https://telegram.me/botpressorg)
+= Bot features =
+📰 Send your content (post, page or custom messages) with templates
+📅 Support for scheduled post broadcast
+⌨️ **Keyboards** and **inline buttons** supported
+💬 Supports chats, groups, supergroups and channels
+↩️ Create unlimited autoresponders
+📊 View insights about users and groups subscribed to your bot
+📡 **Get users location** and replies with geo-focused content using built-in harvesine algorithm
+🎨 Create custom applicatons with **/$command $var1 $var2** format
+💡 **[Zapier](https://zapier.com)** integration
 
-= Bot Features =
-* Instant replies (on secure webhooks)
-* **Keyboards** and **inline buttons** supported
-* Instant send of new **posts/pages/post_types** with configurable template
-* Support for scheduled posts broadcast
-* Supports chats, groups, supergroups and channels
-* Create unlimited commands with custom replies (compatible with shortcodes and php)
-* View and manage your subscribers
-* **Get and dynamically reply to users geolocation** with harvesine algorithm
-* Send manual messages
-* Create custom applicatons with **/$command $var1 $var2** format
-* Add php to /$commands (requires [Insert Php](https://wordpress.org/plugins/insert-php
-* **[Zapier](https://zapier.com)** integrated! You can create integrations with services you use!
-
-= Channel Features =
-* Stream your content to your Telegram channel
+= Channel features =
+📰 Send your content (post, page or custom messages) with configurable templates
+📅 Support for scheduled post broadcast
+💡 **[Zapier](https://zapier.com)** integration
 
 **Note:** your bot must be administrator of your channel for sending messages
 
-**Warning:** due to Telegram limitation you need **SSL certificate** to manage a Telegram Bot. If you don't have one, just choose [botpress.org](https://botpress.org) in plugin options. **This is a free opt-in feature that will send some data to our server**.
+🔐 Every connection relies on secure webhooks for maximum security. Telegram requires **SSL** to manage a Telegram Bot. If you don't have it, just choose the free opt-in service [botpress.org](https://botpress.org) in options (the feature will send some data to our server).
 
-= Zapier = 
+= Zapier and IoT features = 
 Zapier makes it easy to automate tasks between web apps. For example:
 
 * send a news published on a website (based on RSS)
@@ -56,16 +55,9 @@ https://www.youtube.com/watch?v=14aEV0_FHFk
 
 https://www.youtube.com/watch?v=frdub3fTdqk
 
-= Examples =
-* **[CosenzApp_bot](http://telegram.me/CosenzApp_bot)** (italian) - Guide for Cosenza city 
-
-= Translations =
-You can add your translations here: [translate.wordpress.org](https://translate.wordpress.org/projects/wp-plugins/telegram-bot) 
-
-If you want to be translation editor for your locale, please send your username and language code (eg. it_IT) to milesimarco@outlook.com
-
-= Support =
-Give a look to our [faqs](https://wordpress.org/plugins/telegram-bot/faq/) or ask for [support](https://wordpress.org/support/plugin/telegram-bot). If you like this plugin, please leave a [review](https://wordpress.org/support/view/plugin-reviews/telegram-bot) or feedback so we can improve it!
+= DEMO =
+* **[CosenzApp_bot](http://telegram.me/CosenzApp_bot)** (italian) - Guide for Cosenza city
+Want to showcase your work? contact us!
 
 == Installation ==
 This section describes how to install the plugin and get it working.
@@ -76,7 +68,7 @@ This section describes how to install the plugin and get it working.
 4. Go through the steps and hit update!
 
 == Frequently Asked Questions ==
-Documentation is available on [www.botpress.org/docs](https://www.botpress.org/docs)
+More documentation is available on [www.botpress.org/docs](https://www.botpress.org/docs)
 
 = How do I create a bot? =
 [www.botpress.org/docs/telegram/how-to-create-a-bot](https://www.botpress.org/docs/telegram/how-to-create-a-bot/)
@@ -92,10 +84,12 @@ If you are a developer, or just want a more complete "Telegram > Log" enable WP_
 The plugin debug mode also allows to explore Telegram users and groups as standard posts. This let you to check custom fields for each users and modify them in real time. You'll notice a new column (= Telegram id for the user) in Subscribers and Groups page.
 We don't suggest to keep WP_DEBUG if not for testing purposes.
 
-= How to set up dynamic replies? =
-The best way to integrate and add functions is to create another plugin.
-For example, create a file called **telegram-bot-custom.php** and upload it to wp-content/plugins, then activate it.
-Write the file as follows:
+= How to make dynamic replies? (PHP required) =
+The best way to integrate PHP code is to build a custom integration plugin, but you can also add PHP to /$commands directly in your WordPress admin dashboard using the [Insert Php](https://wordpress.org/plugins/insert-php) plugin.
+
+In case you want to scale and choose the first option, you can create a new file called **telegram-bot-custom.php** and upload it to wp-content/plugins.
+
+The following example, once activated in the plugins list, will reply to `/command`:
 
 `<?php
 /*
@@ -261,8 +255,84 @@ Another example, that is a "emergency bot" created for the mid-italy earthquake 
 7. Dynamic repliles and inline buttons example from [IcBrendola_bot](http://telegram.me/IcBrendola_bot)
 8. Keyboard example from [CosenzApp_bot](http://telegram.me/CosenzApp_bot)
 9. Post broadcasting (all post types)
+10. Native Gutenberg support
 
 == Changelog ==
+
+= 3.4.9 20210804 =
+* [BUGFIX] Fixed a problem with correct user details update on message received (thanks @sanaconeltantra)
+* [BUGFIX] Minor changes
+
+= 3.4.7 20210402 =
+* [BUGFIX] Fixed bug with reply_markup "null" - Thanks to Stefano!
+* [BUGFIX] Minor changes
+
+= 3.4.6 20210222 =
+* [BUGFIX] Minor changes
+
+= 3.4.4 20210222 =
+* [BUGFIX] Minor changes
+
+= 3.4.3 20210219 =
+* [BUGFIX] Minor changes
+
+= 3.4.2 20210217 =
+* [IMPROVE] Added ability to directly send a new manual message after the previous (in send screen)
+* [BUGFIX] Solved a bug for error "400 - BAD REQUEST" when sending to a channel and a keyboard was set in options
+
+= 3.4.1 20210205 =
+* [IMPROVE] Minor changes
+
+= 3.4 20201210 =
+* [IMPROVE] Many function enhancements (faster and more developer flexible)
+* [NEW] "Send to ALL" option
+* [IMPROVE] Fixed some warnings
+* [BUGFIX] Bugfix with Gutenberg default send target
+* [IMPROVE] Commands are now "Responders"
+* [IMPROVE] Under the hood improvements
+
+= 3.3 20201114 =
+* Admin graphic enhancements
+* Under the hood improvements
+
+= 3.2.2 20201001 =
+* Minor improvements
+
+= 3.2.1 20200909 =
+* **Fixed** wrong icon for Gutenberg editor in WP 5.5
+* Temporary deactivated "Publish" text alteration in post edit screen (Gutenberg) due to regression
+
+= 3.2 20200908 =
+* Added **page** support
+* Improved send to Telegram UI with message on publish button
+* Fixed bug and compatibility for post_type without custom-fields support declared
+
+= 3.1.2 20200515 =
+* Bugfix for particular proxy configurations
+
+= 3.1.1 20200515 =
+* Minor improvements
+
+= 3.1 20200430 =
+* New welcome screen
+* Redesigned options page
+* Performance improvements
+
+= 3.0 28.04.2020 =
+* Added **Gutenberg** compatibility
+* Performance improvements
+* New backend design
+* Many new features coming soon!
+
+= 2.3 27.12.2019 =
+* Anonymous functions to manage post actions are now callable for better third party integration
+* Many Thanks to STEFANO - Oratorio Leno (Brescia) ITALY
+
+= 2.2.1 15.06.2019 =
+* **Tested** with latest WP version
+
+= 2.2 05.09.2017 =
+* **Tested** with WP4.8
 
 = 2.1.1 4.03.2017 =
 * Added %CHAT_ID% placeholder for post template (useful for Google Analytics campaign)

@@ -60,9 +60,9 @@
 		}
 		return;
 	} else if ($PRIVATE) {
-	    update_post_meta($o->ID, 'telegram_first_name', $data['message']['from']['first_name']);
-		update_post_meta($o->ID, 'telegram_last_name', $data['message']['from']['last_name']);
-		update_post_meta($o->ID, 'telegram_username', $data['message']['from']['username']);
+	    update_post_meta( telegram_getid( $USERID ), 'telegram_first_name', $data['message']['from']['first_name']);
+		update_post_meta( telegram_getid( $USERID ), 'telegram_last_name', $data['message']['from']['last_name']);
+		update_post_meta( telegram_getid( $USERID ), 'telegram_username', $data['message']['from']['username']);
 	} else if ($GROUP) {
 		update_post_meta($o->ID, 'telegram_name', $data['message']['chat']['title']);
 	}
