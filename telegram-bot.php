@@ -138,10 +138,10 @@ function telegram_parsetext($text, $type, $chat_id) {
         $text = str_replace('%LOCATION_LONGITUDE%', get_post_meta($o->ID, 'telegram_last_longitude', true), $text);
     } else {
         $o = get_page_by_title( $chat_id, OBJECT, 'telegram_groups');
-        /*if ($o) {
+        if ($o) {
             $text = str_replace('%FIRST_NAME%', get_post_meta($o->ID, 'telegram_name', true), $text);
-            $text = str_replace('%LAST_NAME%', get_post_meta($o->ID, '', true), $text);
-        }*/
+            $text = str_replace('%LAST_NAME%', get_post_meta($o->ID, ' ', true), $text);
+        }
     }
 
     return str_replace('×', 'x', str_replace('_', '\_', strip_tags( html_entity_decode( apply_filters('the_content', $text ) ) )));
