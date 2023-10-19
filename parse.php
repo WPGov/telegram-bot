@@ -2,7 +2,7 @@
 	$json = file_get_contents('php://input');
 
 	if (!$json) {
-		telegram_log('returned','','');
+		telegram_log('Warning','Webhook URL','Endpoint was called without input.');
 		return;
 	}
 
@@ -12,7 +12,7 @@
         telegram_log('EXCEPTION', 'MESSAGE_ID', json_encode($json, TRUE));
         die();
     }
-    update_option('wp_telegram_last_id', $data['message']['message_id']);
+    update_option('wp_telegram_last_id', $data['message']['message_id'] );
 
 	if ( $data['message']['chat']['type'] == 'private' ) {
 		$USERID = $data['message']['from']['id'];
@@ -24,6 +24,11 @@
 		$CPT = 'telegram_groups';
 		$GROUP = true; $PRIVATE = false;
 		$COMMAND = $data['message']['text'];
+	} else if ( $data['my_chat_member']['chat']['type'] == 'supergroup' ) {
+		$USERID = $data['my_chat_member']['chat']['id'];
+		$CPT = 'telegram_groups';
+		$GROUP = true; $PRIVATE = false;
+		$COMMAND = '';
 	} else if ( $data['callback_query']['message']['text'] ) {
 		$USERID = $data['callback_query']['message']['chat']['id'];
 		$CPT = 'telegram_subscribers';
@@ -54,17 +59,30 @@
 			update_post_meta($p, 'telegram_username', $data['message']['from']['username']);
 			telegram_sendmessage( $USERID, telegram_option('wmuser') );
 		} else if ( $GROUP ) {
-			update_post_meta($p, 'telegram_name', $data['message']['chat']['title']);
+			$name = '';
+			if ( isset( $data['message']['chat']['title'] ) ) {
+				$name = $data['message']['chat']['title'];
+			} else if ( isset( $data['my_chat_member']['chat']['title'] ) ) {
+				$name = $data['my_chat_member']['chat']['title'];
+			}
+			update_post_meta($p, 'telegram_name', $name );
 			telegram_log('', '', 'Bot added to <strong>'.$data['message']['chat']['title'].'</strong>');
             telegram_sendmessage( $USERID, telegram_option('wmgroup') );
 		}
 		return;
 	} else if ($PRIVATE) {
-	    update_post_meta($o->ID, 'telegram_first_name', $data['message']['from']['first_name']);
-		update_post_meta($o->ID, 'telegram_last_name', $data['message']['from']['last_name']);
-		update_post_meta($o->ID, 'telegram_username', $data['message']['from']['username']);
+		$POST_ID = telegram_getid( $USERID );
+		$fieldsToCheck = [ 'first_name', 'last_name', 'username' ];
+		foreach( $fieldsToCheck as $field ) {
+			if ( get_post_meta( $POST_ID, 'telegram_'.$field, true ) != $data['message']['from'][$field] ) {
+				update_post_meta( $POST_ID, 'telegram_'.$field, $data['message']['from'][$field]);
+			}
+		}
+		$counter = get_post_meta($POST_ID, 'telegram_counter', true);
+		$counter = $counter ? ++$counter : 1;
+		update_post_meta( $POST_ID, 'telegram_counter', $counter );
 	} else if ($GROUP) {
-		update_post_meta($o->ID, 'telegram_name', $data['message']['chat']['title']);
+		update_post_meta($o->ID, 'telegram_name', 'xx');
 	}
 
     if ( isset( $data['message']['location'] ) ) {
