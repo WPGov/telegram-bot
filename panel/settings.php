@@ -27,12 +27,6 @@
           case 0: // SSL
             $url .=telegram_getapiurl();
             break;
-          case 2:
-            $current_user = wp_get_current_user();
-            json_decode( @file_get_contents( 'https://botpress.org/endpoint-tr.php?token='.get_option( 'wp_telegram_apikey').'&url='.get_site_url().'&email='.$current_user->user_email.'&fn='.$current_user->first_name.'&ln='.$current_user->last_name ), true );
-            telegram_log( 'sys', 'Botpress update', 'OK');
-            $url .='https://botpress.org/endpoint-td.php?key=' . get_option( 'wp_telegram_apikey');
-            break;
         }
         json_decode(file_get_contents($url), true);
         telegram_log( 'sys', 'Webhook update', $url);
@@ -103,7 +97,7 @@
                       <?php if (!is_ssl()) { echo 'disabled'; } ?> value="0"
               <?php if ( isset( $options[ 'mode' ] ) && $options[ 'mode' ] == 0 ) { echo ' selected="selected"'; } ?>>Telegram WebHooks
               </option>
-              <option value="2" <?php if ( isset( $options['mode'] ) && $options['mode'] == 2 ) { echo ' selected="selected"'; } ?>>BotPress.org</option>
+              <option value="2" <?php if ( isset( $options['mode'] ) && $options['mode'] == 2 ) { echo ' selected="selected"'; } ?>>BotPress.org - DEPRECATED</option>
           </select>
       <br>
       <small>
