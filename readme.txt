@@ -6,7 +6,7 @@ Author:		Marco Milesi
 Author URI:   https://profiles.wordpress.org/milmor/
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=F2JK36SCXKTE2
 Tags: telegram, bot, newsletter, channel, group, automatic, stream, classicpress
-Requires at least: 3.8
+Requires at least: 3.8.1
 Requires PHP: 5.6
 Tested up to: 6.5
 License: GPLv2 or later
@@ -261,6 +261,12 @@ Another example, that is a "emergency bot" created for the mid-italy earthquake 
 10. Native Gutenberg support
 
 == Changelog ==
+
+= 3.8 2024-07-01 =
+
+* [IMPROVE] Redesigned settings page with old settings cleanup
+* [IMPROVE] Better Zapier handling
+* [IMPROVE] Minor changes, code cleanup, security hardening and optimizations
 
 = 3.7 20231020 =
 * [NEW] Added ability to selectively send message to subscribed groups
