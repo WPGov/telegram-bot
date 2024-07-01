@@ -1,12 +1,12 @@
 === Telegram Bot & Channel ===
 Contributors: Milmor
-Version:	3.8
-Stable tag:	3.8
+Version:	3.8.2
+Stable tag:	3.8.2
 Author:		Marco Milesi
 Author URI:   https://profiles.wordpress.org/milmor/
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=F2JK36SCXKTE2
 Tags: telegram, bot, newsletter, channel, group, automatic, stream, classicpress
-Requires at least: 3.8.1
+Requires at least: 3.8
 Requires PHP: 5.6
 Tested up to: 6.5
 License: GPLv2 or later
