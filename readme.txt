@@ -1,27 +1,27 @@
 === Telegram Bot & Channel ===
 Contributors: Milmor
-Version:	3.7
-Stable tag:	3.7
+Version:	3.8
+Stable tag:	3.8
 Author:		Marco Milesi
 Author URI:   https://profiles.wordpress.org/milmor/
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=F2JK36SCXKTE2
 Tags: telegram, bot, newsletter, channel, group, automatic, stream, classicpress
 Requires at least: 3.8
 Requires PHP: 5.6
-Tested up to: 6.4
+Tested up to: 6.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Transform your content distribution and customer experience with our Telegram broadcast and interactive bot solutions. Zapier integrated!
+Send your posts to Telegram and build an interactive bot. Zapier integrated!
 
 == Description ==
 
-This versatile plugin allows you to accomplish a variety of tasks, including teaching, playing, searching, broadcasting, reminding, connecting, and integrating with your services.
+This  plugin allows you to accomplish a variety of tasks, including teaching, playing, searching, broadcasting, reminding, connecting, and integrating with your services.
 
 With this powerful bot builder, you can: 
 
-🤖 **Bot builder**: create interactive autoresponders for users and groups
-📣 **Broadcast**: utilize the broadcast feature to send messages to your channels and bot subscribers
+🤖 **Build a bot**: create interactive autoresponders for users and groups
+📣 **Broadcast to a channel**: utilize the broadcast feature to send messages to your channels and bot subscribers
 
 https://youtu.be/8fckoWSmAks
 

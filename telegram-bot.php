@@ -3,7 +3,7 @@
 Plugin Name:  Telegram Bot & Channel
 Plugin URI:  https://wordpress.org/plugins/telegram-bot/
 Description: Broadcast your content to Telegram, build interactive bots and boost your omnichannel customer experience
-Version: 3.7
+Version: 3.8
 Author: Marco Milesi
 Author URI: https://www.marcomilesi.com
 Contributors: Milmor
@@ -14,6 +14,7 @@ Domain Path: /languages
 require 'columns.php';
 require 'admin-messages.php';
 require 'panel/send.php';
+require 'panel/settings.php';
 
 add_action( 'plugins_loaded', function(){
     load_plugin_textdomain( 'telegram-bot' );
@@ -25,7 +26,7 @@ add_action('admin_menu', function(){
 	add_submenu_page('telegram_main', __('Groups', 'telegram-bot'), __('Groups', 'telegram-bot'), 'manage_options', 'edit.php?post_type=telegram_groups');
     add_submenu_page('telegram_main', __('Send a message', 'telegram-bot'), __('Send a message', 'telegram-bot'), 'manage_options', 'telegram_send', 'telegram_send_panel' );
 	add_submenu_page('telegram_main', __('Responders', 'telegram-bot'), __('Responders', 'telegram-bot'), 'manage_options', 'edit.php?post_type=telegram_commands');
-	add_submenu_page('telegram_main', __('Settings', 'telegram-bot'), __('Settings', 'telegram-bot'), 'manage_options', 'telegram_settings', function(){require 'panel/settings.php';});
+	add_submenu_page('telegram_main', __('Settings', 'telegram-bot'), __('Settings', 'telegram-bot'), 'manage_options', 'telegram_settings', function(){ telegram_settings_page(); });
 	add_submenu_page('telegram_main', 'Log', 'Log', 'manage_options', 'telegram_log', 'telegram_log_panel');
 });
 
@@ -87,7 +88,34 @@ add_action( 'init', function() {
 require 'custom-post-types.php';
 
 function telegram_defaults() {
-    require 'defaults.php';
+    if (!get_option('wp_telegram_apikey')) {
+        update_option('wp_telegram_apikey', md5(microtime() . rand() . get_site_url()));
+    }
+  
+    if (!get_option('wp_telegram_dispatches')) {
+        update_option('wp_telegram_dispatches', 0);
+    }
+  
+    $defaults   = array(
+        array('token', ''),
+        array('zapier', ''),
+        array('wmgroup', 'Welcome!'),
+        array('wmuser', 'Welcome, %FIRST_NAME%!'),
+        array('posttemplate', '%TITLE%'.PHP_EOL.PHP_EOL.'%LINK%'),
+        array('bmuser', 'Bye, %FIRST_NAME%. Type /start to enable the bot again.'),
+        array('keyboard', '')
+    );
+  
+    $my_options = get_option('wp_telegram');
+  
+    $conta = count($defaults);
+  
+    for ($i = 0; $i < $conta; $i++) {
+        if (!isset( $my_options[$defaults[$i][0]] ) || !$my_options[$defaults[$i][0]]) {
+            $my_options[$defaults[$i][0]] = $defaults[$i][1];
+            update_option('wp_telegram', $my_options);
+        }
+    }
 }
 
 add_action('template_redirect', function(){
@@ -98,7 +126,15 @@ add_action('template_redirect', function(){
 	} else if ( isset( $_GET['zap'] ) && $wp_query->query['zap']) {
         if ($_GET['zap'] == get_option('wp_telegram_apikey') && telegram_option('zapier')) {
             status_header( 200 );
-            require 'zapier.php';
+            
+            $json = file_get_contents('php://input');
+            if (!$json) {
+                return;
+            }
+            $data = (array) json_decode($json, TRUE);
+            telegram_log('------>', 'ZAPIER', json_encode((array) file_get_contents("php://input")));
+            telegram_sendmessagetoall($data['hook']);
+
         }
 	}
 });
