@@ -3,8 +3,12 @@
 
         $count = 0;
         $send_to_custom_ids = false;
-        echo '<div class="wrap"><h2>'.__('Send a message', 'telegram-bot').'</h2>';
+        echo '<div class="wrap telegram-send-panel" style="max-width:700px;margin:auto;">';
+        echo '<h1 style="margin-bottom:24px;">' . __('Send a Message', 'telegram-bot') . '</h1>';
         if (isset($_POST["telegram_new_message"])) {
+            if (!isset($_POST['_wpnonce']) || !wp_verify_nonce($_POST['_wpnonce'], 'telegram_send_message')) {
+                wp_die(__('Security check failed.','telegram-bot'));
+            }
             $message = $_POST["telegram_new_message"];
             
             if ( isset( $_GET['telegram_post_ids'] ) ) {
@@ -33,34 +37,32 @@
                 }
             }
             
-            echo '<div class="notice notice-success">
-            <p>Your message have been sent!</p>
-            </div>';
+            echo '<div class="notice notice-success" style="margin-bottom:24px;"><p>' . __('Your message has been sent!', 'telegram-bot') . '</p></div>';
         }
-        echo '<form method="post" id="telegram_new_message">';
+        echo '<form method="post" id="telegram_new_message" style="background:#fff;padding:32px 32px 24px 32px;border-radius:10px;box-shadow:0 2px 8px #0001;">';
+        wp_nonce_field('telegram_send_message');
         if ( isset( $_GET['telegram_post_ids'] ) ) {
             $telegram_post_ids = explode( ',', $_GET['telegram_post_ids']);
-            echo '<div class="notice notice-warning"><p>Note: You are sending this message to <b>'.count( $telegram_post_ids ).' subscribers</b></p></div>';
+            echo '<div class="notice notice-warning" style="margin-bottom:16px;"><p>' . __('Note: You are sending this message to', 'telegram-bot') . ' <b>' . count( $telegram_post_ids ) . ' ' . __('subscribers', 'telegram-bot') . '</b></p></div>';
             $send_to_custom_ids = true;
         }
-        echo '<textarea name="telegram_new_message" cols="100" rows="10"></textarea><br>';
+        echo '<label for="telegram_new_message" style="font-weight:bold;font-size:1.1em;">' . __('Message', 'telegram-bot') . '</label><br>';
+        echo '<textarea name="telegram_new_message" id="telegram_new_message" cols="80" rows="7" style="width:100%;margin-bottom:18px;font-size:1.1em;"></textarea><br>';
         $target = $send_to_custom_ids ? 'custom_ids' : telegram_option('target');
         
         if ( !$send_to_custom_ids ) {
-            echo __('Send to', 'telegram-bot').':';
-            ?>
-        <select name="telegram_target">
-            <option value="0"><?php _e('Users, Groups, Channel', 'telegram-bot'); ?></option>
-            <option value="1"<?php if ($target==1 ) { echo ' selected="selected"'; } ?>><?php _e('Users', 'telegram-bot'); ?></option>
-            <option value="2"<?php if ($target==2 ) { echo ' selected="selected"'; } ?>><?php _e('Groups', 'telegram-bot'); ?></option>
-            <option value="3"<?php if ($target==3 ) { echo ' selected="selected"'; } ?>><?php _e('Users, Groups', 'telegram-bot'); ?></option>
-            <option value="4"<?php if ($target==4 ) { echo ' selected="selected"'; } ?>><?php _e('Channel', 'telegram-bot'); ?></option>
-        </select>
-        <?php }
-
-        submit_button( __('Send Now', 'telegram-bot'), 'primary');
+            echo '<label for="telegram_target" style="font-weight:bold;">' . __('Send to', 'telegram-bot') . ':</label> ';
+            echo '<select name="telegram_target" id="telegram_target" style="margin-bottom:18px;">';
+            echo '<option value="0"' . ($target == 0 ? ' selected' : '') . '>' . __('Users, Groups, Channel', 'telegram-bot') . '</option>';
+            echo '<option value="1"' . ($target == 1 ? ' selected' : '') . '>' . __('Users', 'telegram-bot') . '</option>';
+            echo '<option value="2"' . ($target == 2 ? ' selected' : '') . '>' . __('Groups', 'telegram-bot') . '</option>';
+            echo '<option value="3"' . ($target == 3 ? ' selected' : '') . '>' . __('Users, Groups', 'telegram-bot') . '</option>';
+            echo '<option value="4"' . ($target == 4 ? ' selected' : '') . '>' . __('Channel', 'telegram-bot') . '</option>';
+            echo '</select><br>';
+        }
+        echo '<button type="submit" class="button button-primary" style="font-size:1.1em;padding:8px 32px;">' . __('Send Now', 'telegram-bot') . '</button>';
         echo '</form>';
-
+        echo '<style>.telegram-send-panel textarea { font-family: inherit; } .telegram-send-panel .notice-success { border-left: 4px solid #46b450; } .telegram-send-panel .notice-warning { border-left: 4px solid #ffb900; }</style>';
         echo '</div>';
     }
 ?>

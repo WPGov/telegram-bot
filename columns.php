@@ -15,6 +15,7 @@
     add_filter('manage_edit-telegram_groups_columns', function($columns) {
         $columns['name'] ='Group Name';
         $columns['sdate'] ='Subscribed on';
+        unset($columns['cb']);
         unset($columns['date']);
         if ( defined('WP_DEBUG') && false === WP_DEBUG) {
             unset($columns['title']);
@@ -22,23 +23,22 @@
         return apply_filters( 'manage_edit-telegram_groups_columns_filter', $columns );
     } );
 
-    function bulk_actions_telegram_send($bulk_actions) {
+    add_filter('bulk_actions-edit-telegram_subscribers', function($bulk_actions) {
         $bulk_actions['telegram-send'] = __('Send message', 'telegram-bot');
         return $bulk_actions;
-    }
-    add_filter('bulk_actions-edit-telegram_subscribers', 'bulk_actions_telegram_send' );
-    add_filter('bulk_actions-edit-telegram_groups', 'bulk_actions_telegram_send' );
+    });
 
-    function handle_bulk_actions_telegram_send($redirect_url, $action, $post_ids) {
+    add_filter('handle_bulk_actions-edit-telegram_subscribers', function($redirect_url, $action, $post_ids) {
         if ($action == 'telegram-send') {
             
             $querystring = implode( ',', $post_ids);
             $redirect_url = admin_url('admin.php?page=telegram_send&telegram_post_ids='.$querystring, 'http');
         }
         return $redirect_url;
-    }
-    add_filter('handle_bulk_actions-edit-telegram_subscribers', 'handle_bulk_actions_telegram_send', 10, 3);
-    add_filter('handle_bulk_actions-edit-telegram_groups', 'handle_bulk_actions_telegram_send', 10, 3);
+    }, 10, 3);
+
+    #add_filter('bulk_actions-edit-telegram_subscribers', function($actions){ unset( $actions['edit'] ); return apply_filters( 'bulk_actions-edit-telegram_subscribers_filter', $actions ); });
+    #add_filter('bulk_actions-edit-telegram_groups', function($actions){ unset( $actions['edit'] ); return apply_filters( 'bulk_actions-edit-telegram_groups_filter', $actions ); });
 
     add_action('manage_telegram_subscribers_posts_custom_column', 't_manage_columns', 10, 2);
     add_action('manage_telegram_groups_posts_custom_column', 't_manage_columns', 10, 2);
@@ -46,7 +46,7 @@
         global $post;
         switch ($column) {
             case 'name':
-                echo '<a class="row-title" href="'.get_edit_post_link( $post_id ).'">'.get_post_meta($post_id, 'telegram_name', true).'</a>';
+                printf(get_post_meta($post_id, 'telegram_name', true));
                 break;
             case 'user_name':
                 echo '<a class="row-title" href="'.get_edit_post_link( $post_id ).'">'.get_post_meta($post_id, 'telegram_first_name', true) . ' ' . get_post_meta($post_id, 'telegram_last_name', true).'</a>';

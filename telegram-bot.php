@@ -3,7 +3,7 @@
 Plugin Name:  Telegram Bot & Channel
 Plugin URI:  https://wordpress.org/plugins/telegram-bot/
 Description: Broadcast your content to Telegram, build interactive bots and boost your omnichannel customer experience
-Version: 3.8.2
+Version: 3.6.3
 Author: Marco Milesi
 Author URI: https://www.marcomilesi.com
 Contributors: Milmor
@@ -14,7 +14,6 @@ Domain Path: /languages
 require 'columns.php';
 require 'admin-messages.php';
 require 'panel/send.php';
-require 'panel/settings.php';
 
 add_action( 'plugins_loaded', function(){
     load_plugin_textdomain( 'telegram-bot' );
@@ -26,40 +25,47 @@ add_action('admin_menu', function(){
 	add_submenu_page('telegram_main', __('Groups', 'telegram-bot'), __('Groups', 'telegram-bot'), 'manage_options', 'edit.php?post_type=telegram_groups');
     add_submenu_page('telegram_main', __('Send a message', 'telegram-bot'), __('Send a message', 'telegram-bot'), 'manage_options', 'telegram_send', 'telegram_send_panel' );
 	add_submenu_page('telegram_main', __('Responders', 'telegram-bot'), __('Responders', 'telegram-bot'), 'manage_options', 'edit.php?post_type=telegram_commands');
-	add_submenu_page('telegram_main', __('Settings', 'telegram-bot'), __('Settings', 'telegram-bot'), 'manage_options', 'telegram_settings', function(){ telegram_settings_page(); });
+	add_submenu_page('telegram_main', __('Settings', 'telegram-bot'), __('Settings', 'telegram-bot'), 'manage_options', 'telegram_settings', function(){require 'panel/settings.php';});
 	add_submenu_page('telegram_main', 'Log', 'Log', 'manage_options', 'telegram_log', 'telegram_log_panel');
 });
 
 function telegram_log_panel() {
-	if (isset($_GET['tbclear'])) {
-		delete_option('wp_telegram_log');
-	}
+    if (isset($_GET['tbclear'])) {
+        if (!isset($_GET['_wpnonce']) || !wp_verify_nonce($_GET['_wpnonce'], 'telegram_log_clear')) {
+            wp_die(__('Security check failed.','telegram-bot'));
+        }
+        delete_option('wp_telegram_log');
+    }
     $log = get_option('wp_telegram_log');
-    
-	echo '<div class="wrap"><h2>Activity log <a href="admin.php?page=telegram_log" class="add-new-h2">'.__('Reload', 'telegram-bot').'</a><a href="admin.php?page=telegram_log&tbclear=1" class="add-new-h2">'.__('Clear', 'telegram-bot').'</a></h2>
-    <table class="widefat fixed" cellspacing="0">
-    <thead>
-    <tr>
-    <th style="width: 5%;" class="manage-column" scope="col">'.__('Type', 'telegram-bot').'</th>
-    <th style="width: 10%;" class="manage-column" scope="col">'.__('Date', 'telegram-bot').'</th>
-    <th style="width: 10%;" class="manage-column" scope="col">'.__('Author', 'telegram-bot').'</th>
-    <th id="columnname" class="manage-column" scope="col">'.__('Description', 'telegram-bot').'</th>
-    </tr>
-    </thead>
-    <tbody>';
-    if ( is_array( $log ) ) {
+    echo '<div class="wrap telegram-log-panel">';
+    echo '<h1 style="margin-bottom:24px;">'.__('Activity Log', 'telegram-bot').'</h1>';
+    echo '<div style="margin-bottom:20px;">';
+    echo '<a href="admin.php?page=telegram_log" class="button button-secondary" style="margin-right:10px;">'.__('Reload', 'telegram-bot').'</a>';
+    echo '<a href="'.wp_nonce_url('admin.php?page=telegram_log&tbclear=1', 'telegram_log_clear').'" class="button button-danger" style="color:#fff;background:#d63638;border-color:#d63638;">'.__('Clear Log', 'telegram-bot').'</a>';
+    echo '</div>';
+    echo '<div style="overflow-x:auto;">';
+    echo '<table class="widefat fixed striped" cellspacing="0" style="min-width:700px;">';
+    echo '<thead><tr>';
+    echo '<th style="width: 7%;">'.__('Type', 'telegram-bot').'</th>';
+    echo '<th style="width: 15%;">'.__('Date', 'telegram-bot').'</th>';
+    echo '<th style="width: 15%;">'.__('Author', 'telegram-bot').'</th>';
+    echo '<th>'.__('Description', 'telegram-bot').'</th>';
+    echo '</tr></thead><tbody>';
+    if ( is_array( $log ) && count($log) ) {
         foreach ( $log as $line ) {
             echo '<tr>';
-            echo '<td>' . ( isset( $line[0] ) ? $line[0] : '' ) . '</td>';
-            echo '<td>' . ( isset( $line[1] ) ? $line[1] : '' ) . '</td>';
-            echo '<td>' . ( isset( $line[2] ) ? $line[2] : '' ) . '</td>';
-            echo '<td>' . ( isset( $line[3] ) ? $line[3] : '' ) . '</td>';
+            echo '<td><span style="font-weight:bold;color:#2271b1;">' . ( isset( $line[0] ) ? esc_html($line[0]) : '' ) . '</span></td>';
+            echo '<td>' . ( isset( $line[1] ) ? esc_html($line[1]) : '' ) . '</td>';
+            echo '<td>' . ( isset( $line[2] ) ? esc_html($line[2]) : '' ) . '</td>';
+            echo '<td>' . ( isset( $line[3] ) ? esc_html($line[3]) : '' ) . '</td>';
             echo '</tr>';
         }
+    } else {
+        echo '<tr><td colspan="4" style="text-align:center;color:#888;">'.__('No log entries found.', 'telegram-bot').'</td></tr>';
     }
-   
-    echo '</tbody>
-    </table></div>';
+    echo '</tbody></table></div>';
+    echo '<style>.telegram-log-panel .button-danger:hover{background:#a00!important;border-color:#a00!important;}</style>';
+    echo '</div>';
 }
 
 add_action('admin_init', function() {
@@ -88,33 +94,37 @@ add_action( 'init', function() {
 require 'custom-post-types.php';
 
 function telegram_defaults() {
+    // Set API key if not set
     if (!get_option('wp_telegram_apikey')) {
         update_option('wp_telegram_apikey', md5(microtime() . rand() . get_site_url()));
     }
-  
+    // Set dispatches if not set
     if (!get_option('wp_telegram_dispatches')) {
         update_option('wp_telegram_dispatches', 0);
     }
-  
-    $defaults   = array(
-        array('token', ''),
-        array('zapier', ''),
-        array('wmgroup', 'Welcome!'),
-        array('wmuser', 'Welcome, %FIRST_NAME%!'),
-        array('posttemplate', '%TITLE%'.PHP_EOL.PHP_EOL.'%LINK%'),
-        array('bmuser', 'Bye, %FIRST_NAME%. Type /start to enable the bot again.'),
-        array('keyboard', '')
+    // Set main plugin options
+    $defaults = array(
+        'token'         => '',
+        'zapier'        => '',
+        'wmgroup'       => 'Welcome!',
+        'wmuser'        => 'Welcome, %FIRST_NAME%!',
+        'posttemplate'  => '%TITLE%' . PHP_EOL . PHP_EOL . '%LINK%',
+        'bmuser'        => 'Bye, %FIRST_NAME%. Type /start to enable the bot again.',
+        'keyboard'      => ''
     );
-  
     $my_options = get_option('wp_telegram');
-  
-    $conta = count($defaults);
-  
-    for ($i = 0; $i < $conta; $i++) {
-        if (!isset( $my_options[$defaults[$i][0]] ) || !$my_options[$defaults[$i][0]]) {
-            $my_options[$defaults[$i][0]] = $defaults[$i][1];
-            update_option('wp_telegram', $my_options);
+    if (!is_array($my_options)) {
+        $my_options = array();
+    }
+    $changed = false;
+    foreach ($defaults as $key => $value) {
+        if (!isset($my_options[$key])) {
+            $my_options[$key] = $value;
+            $changed = true;
         }
+    }
+    if ($changed) {
+        update_option('wp_telegram', $my_options);
     }
 }
 
@@ -126,7 +136,6 @@ add_action('template_redirect', function(){
 	} else if ( isset( $_GET['zap'] ) && $wp_query->query['zap']) {
         if ($_GET['zap'] == get_option('wp_telegram_apikey') && telegram_option('zapier')) {
             status_header( 200 );
-            
             $json = file_get_contents('php://input');
             if (!$json) {
                 return;
@@ -134,7 +143,6 @@ add_action('template_redirect', function(){
             $data = (array) json_decode($json, TRUE);
             telegram_log('------>', 'ZAPIER', json_encode((array) file_get_contents("php://input")));
             telegram_sendmessagetoall($data['hook']);
-
         }
 	}
 });
@@ -197,6 +205,7 @@ function telegram_parsetext($text, $type, $chat_id) {
         $o = get_page_by_title( $chat_id, OBJECT, 'telegram_groups');
         if ($o) {
             $text = str_replace('%FIRST_NAME%', get_post_meta($o->ID, 'telegram_name', true), $text);
+            $text = str_replace('%LAST_NAME%', get_post_meta($o->ID, '', true), $text);
         }
     }
 

@@ -1,278 +1,124 @@
 === Telegram Bot & Channel ===
-Contributors: Milmor
-Version:	3.8.2
-Stable tag:	3.8.2
-Author:		Marco Milesi
-Author URI:   https://profiles.wordpress.org/milmor/
+Contributors: Milmor, marcomilesi
+Version: 4.0
+Stable tag: 4.0
+Author: Marco Milesi
+Author URI: https://profiles.wordpress.org/milmor/
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=F2JK36SCXKTE2
-Tags: telegram, bot, newsletter, channel, group, automatic, stream, classicpress
-Requires at least: 3.8
-Requires PHP: 5.6
-Tested up to: 6.5
+Tags: telegram, bot, newsletter, channel, group, broadcast, automation, notifications, autoresponder, webhook, ssl, zapier, integration, marketing, customer-engagement, chatbot, wordpress, classicpress
+Requires at least: 4.6
+Requires PHP: 7.0
+Tested up to: 6.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Send your posts to Telegram and build an interactive bot. Zapier integrated!
+Supercharge your WordPress site with Telegram! Broadcast posts, automate notifications, and build interactive bots for your users, groups, and channels. Secure, modern, and easy to use. Zapier integration included!
 
 == Description ==
 
-This  plugin allows you to accomplish a variety of tasks, including teaching, playing, searching, broadcasting, reminding, connecting, and integrating with your services.
+**Telegram Bot & Channel** is the all-in-one solution to connect your WordPress site with Telegram. Instantly broadcast posts, automate notifications, and create interactive bots for your audience. No coding required!
 
-With this powerful bot builder, you can: 
+**Key Features:**
+- 🤖 **Bot builder:** Create interactive autoresponders for users and groups
+- 📣 **Broadcast:** Send posts, pages, or custom messages to your channels, groups, and subscribers
+- 🔔 **Automated notifications:** Instantly notify your audience about new content
+- 🔗 **Zapier integration:** Connect Telegram with 400+ apps and automate your workflows
+- 🔐 **Secure:** All connections use Telegram WebHooks and require SSL for maximum security
+- 🛡️ **Modern UI:** Clean, user-friendly admin panels with stats, logs, and quick actions
 
-🤖 **Build a bot**: create interactive autoresponders for users and groups
-📣 **Broadcast to a channel**: utilize the broadcast feature to send messages to your channels and bot subscribers
+**Why choose this plugin?**
+- 100% free and open source
+- No third-party servers: your data stays on your site
+- Easy setup: just add your bot token and go
+- Developer-friendly: extend with custom PHP actions and filters
 
-https://youtu.be/8fckoWSmAks
+== Features ==
 
-= Bot features =
+**Bot & Broadcast:**
+- Send posts, pages, or custom messages with flexible templates
+- Schedule broadcasts for future posts
+- Use custom keyboards and inline buttons for rich user interaction
+- Broadcast to users, groups, supergroups, and channels
+- Unlimited autoresponders and command triggers
+- View insights about your Telegram audience
+- Haversine algorithm for geo-targeted content
+- Create custom applications with command variables
 
-Enhance your content distribution strategy with these **free** advanced features:
+**Zapier & Automation:**
+- Connect Telegram to 400+ apps (RSS, Instagram, Google Sheets, and more)
+- Automate news, weather, social, and IoT notifications
+- Easy Zapier invite and setup
 
-📰 Send your content (post, page or custom messages) with templates
-📅 Support for scheduled post broadcast
-⌨️ Utilize **keyboards** and **inline buttons** for enhanced user engagement
-💬 Broadcast to various channels including chats, groups, supergroups, and channels
-↩️ Create unlimited autoresponders
-📊 View insights about users and groups subscribed to your bot
-📡 Haversine algorithm to get users' location and provide geo-focused content
-🎨 Create custom applicatons with **/$command $var1 $var2** format for custom application creation
-💡 **[Zapier](https://zapier.com)** integration to ensure seamless connectivity with your other tools
+**Security & Privacy:**
+- All actions protected by WordPress nonces (CSRF protection)
+- Only supports secure Telegram WebHooks (SSL required)
+- No data sent to third-party servers (except optional Zapier integration)
 
-= Channel features =
-📰 Send your content (post, page or custom messages) with configurable templates
-📅 Support for scheduled post broadcast
-💡 **[Zapier](https://zapier.com)** integration
-
-**Note:** your bot must be administrator of your channel for sending messages
-
-🔐 Every connection relies on secure webhooks for maximum security. Telegram requires **SSL** to manage a Telegram Bot. If you don't have it, just choose the free opt-in service [botpress.org](https://botpress.org) in options (the feature will send some data to our server).
-
-= Zapier and IoT features = 
-Zapier makes it easy to automate tasks between web apps. For example:
-
-* send a news published on a website (based on RSS)
-* send the weather to your subscribers, every day
-* inform users when you upload an image on Instagram
-* and much more… With 400+ Zapier Apps supported!
-
-https://www.youtube.com/watch?v=14aEV0_FHFk
-
-= DEMO =
-* **[CosenzApp_bot](http://telegram.me/CosenzApp_bot)** (italian) - Guide for Cosenza city
-Want to showcase your work? contact us!
+**Screenshots:**
+1. Modern dashboard with stats and recent activity
+2. Subscribers list
+3. Commands and autoresponders
+4. Zapier integration
+5. Plugin settings with tabs
+6. Dynamic replies and inline buttons
+7. Keyboard example
+8. Post broadcasting
+9. Native Gutenberg support
 
 == Installation ==
-This section describes how to install the plugin and get it working.
-
-1. Upload `telegram-bot` directory to the `/wp-content/plugins/` directory
-2. Activate the plugin through the 'Plugins' menu in WordPress
+1. Upload the `telegram-bot` directory to `/wp-content/plugins/`
+2. Activate the plugin in the WordPress admin
 3. Go to the Telegram settings page
-4. Go through the steps and hit update!
+4. Enter your bot token and configure your preferences
+5. Enjoy automated Telegram notifications and bot features!
 
 == Frequently Asked Questions ==
-More documentation is available on [www.botpress.org/docs](https://www.botpress.org/docs)
 
-= How do I create a bot? =
-[www.botpress.org/docs/telegram/how-to-create-a-bot](https://www.botpress.org/docs/telegram/how-to-create-a-bot/)
+= How do I create a Telegram bot? =
+Visit [Telegram’s BotFather](https://core.telegram.org/bots#botfather) and follow the instructions to create a new bot and get your token.
 
-= How can i let users subscribe? =
-[www.botpress.org/docs/telegram/how-do-users-subscribe](https://www.botpress.org/docs/telegram/how-do-users-subscribe/)
+= How do users subscribe? =
+Users can start your bot or join your channel/group where the bot is an admin.
 
-= What is Zapier and how do i integrate it? =
-[www.botpress.org/docs/telegram/zapier-integration](https://www.botpress.org/docs/telegram/zapier-integration/)
+= How do I enable Zapier integration? =
+Enable Zapier in the plugin settings and follow the invite link for setup instructions.
 
-= How to enable debug mode? =
-If you are a developer, or just want a more complete "Telegram > Log" enable WP_DEBUG mode.
-The plugin debug mode also allows to explore Telegram users and groups as standard posts. This let you to check custom fields for each users and modify them in real time. You'll notice a new column (= Telegram id for the user) in Subscribers and Groups page.
-We don't suggest to keep WP_DEBUG if not for testing purposes.
+= Is SSL required? =
+Yes, Telegram WebHooks require SSL. Your site must use HTTPS for the plugin to work.
 
-= How to make dynamic replies? (PHP required) =
-The best way to integrate PHP code is to build a custom integration plugin, but you can also add PHP to /$commands directly in your WordPress admin dashboard using the [Insert Php](https://wordpress.org/plugins/insert-php) plugin.
-
-In case you want to scale and choose the first option, you can create a new file called **telegram-bot-custom.php** and upload it to wp-content/plugins.
-
-The following example, once activated in the plugins list, will reply to `/command`:
-
-`<?php
-/*
-Plugin Name: Telegram Bot & Channel (Custom)
-Description: My Custom Telegram Plugin
-Author: My name
-Version: 1
-*/
-
-add_action('telegram_parse','telegramcustom_parse', 10, 2);
-
-function telegramcustom_parse( $telegram_user_id, $text ) {
-    $plugin_post_id = telegram_getid( $telegram_user_id );
-
-    if ( !$plugin_post_id ) {
-        return;
-    }
-
-	/*
-	Here is the dynamic processing and how to reply.
-	You can:
-	- use if, switch and everything that works in php
-	- check if $text is made of multiple words (create an array from $text)
-	- customize and code other actions (ex. create WordPress post is $telegram_user_id is your id)
-	*/
-
-    if ( $text == '/command') {
-        telegram_sendmessage( $telegram_user_id, 'Oh, yes you typed /command');
-    }
-
-    return;
-}
-
-?>`
-
-= How to set up dynamic keyboards? =
-You can send custom keyboards directly in php. Every keyboard can be set only when you send a message, and is kept in the client side until another keyboard is sent (in another message). You can also change this behaviour by setting the $one_time_keyboard true or false.
-
-`telegram_sendmessage( $telegram_user_id, 'Hello from the other side!'); //Message with no keyboard (or with default one if set in plugin options)
-telegram_sendmessage( $telegram_user_id, 'Hello from the other side!', telegram_build_reply_markup( '11,12,13;21,22', true )); //Message with custom keyboard`
-
-Here is the details of telegram_build_reply_markup (an array is returned):
-`telegram_build_reply_markup(
- '11,12,13;21,22', //The keyboard template (eg. 2 row, 3 columns for the first one and two columns for the second one
- true, // $one_time_keyboard (optional) (default false = kept until a new keyboard is sent) (true = kept until the user send something to the bot)
- true // $resize_keyboard (optional) (default true)
-);`
-
-You can also alter keyboards for commands defined in the **admin area**. Start from the previous custom plugin created, and add the following filter:
-
-`add_filter( 'telegram_get_reply_markup_filter', 'telegram_get_reply_markup_filter_custom', 1 );
-
-function telegram_get_reply_markup_filter_custom( $id ) {
-    if ( $id ) {
-        switch ( $id ) {
-            case 7: //Your command ID (found in the url while editing the command)
-                telegram_log('####', $id, 'custom keyboard'); //Useful for debug
-                return array(
-                    'keyboard' => array(array('Top Left', 'Top Right'),array('Bottom')),
-                    'resize_keyboard' => true, //true or false (suggested: true)
-                    'one_time_keyboard' => true //true or false
-                    );            
-            default:
-                return;
-        }
-    }
-}`
-
-= How to get user location? =
-It's easy, with harvesine algorithm (one-point radius) or standard geolocation (4-points).
-These snippets only cover the harvesine algorithm, that is simple and supported by the plugin. To use the standard 4-points geolocation it's enough to do some php-calc with basic if-then structures.
-
-You can start from the previous custom plugin created, and add the following action:
-
-`add_action('telegram_parse_location','telegramcustom_c_parse_location', 10, 3);
-
-function telegramcustom_c_parse_location ( $telegram_user_id, $lat, $long  ) {
-
-  if ( telegram_location_haversine_check ( 45.85, 9.70, $lat, $long, 20 ) ) {
-    telegram_sendmessage( $telegram_user_id, 'Inside the radius');
-  }
-
-}`
-
-The examples sends a "Inside the radius" message when the user is inside the **20-meters** radius centered in 45.85 Lat, 9.70 Long.
-
-You have two developer functions to use:
-
-`//Check if point is within a distance (max_distance required)
-$boolean = telegram_location_haversine_check ( $latitudeFrom, $longitudeFrom, $latitudeTo, $longitudeTo, $max_distance, $min_distance = 0, $earthRadius = 6371000);
-
-//Calculate the distance
-$int = telegram_location_haversine_distance ( $latitudeFrom, $longitudeFrom, $latitudeTo, $longitudeTo, $earthRadius = 6371000);`
-
-The first function returns a boolean (true/false) depending on given parameters. Please note that $min_distance and $earthRadius are optional.
-The second one returns a int (in meters) of the distance. $earthRadius optional.
-
-Both the functions calculates distances on meters. If you want another type of result, just change the $earthRadius.
-
-= How to get user photos? =
-We've written simple functions to let developers build everything.
-Photos are saved in **/wp-content/uploads/telegram-bot/'.$plugin_post_id.'/'.$file_name** where $plugin_post_id is the custom post type id associated with the Telegram subscription (ex. '24') and $file_name is time().$extension
-
-`<?php
-/*
-Plugin Name: Telegram Bot & Channel (Custom)
-Description: My Custom Telegram Plugin
-Author: My name
-Version: 1
-*/
-
-add_action('telegram_parse_photo','telegramcustom_parse_photo', 10, 2);
-
-function telegramcustom_parse_photo ( $telegram_user_id, $photo  ) {
-
- $plugin_post_id = telegram_getid( $telegram_user_id );
-
- if ( !$plugin_post_id ) {
-  return;
- }
-
- /*
-  Here is the dynamic processing and how to reply.
-  You can:
-   - use if, switch and everything that works in php
-   - check if $text is made of multiple words (create an array from $text)
-   - customize and code other actions (ex. create WordPress post is $telegram_user_id is your id)
- */
- 
- /*
-   $photo[2]['file_id'] is only one of available sizes. You should make sure that this size exist, or check for another size.
-   $photo[1]['file_id'] has lower resolution
- */
- $url = telegram_download_file( $telegram_user_id, $photo[2]['file_id'] ); //Fetch and save photo to your server
- 
- if ( $url ) { //$url is the local url because photo is already saved
-
-  //You can save the entry in your db
-  global $wpdb;
-  $arr = array( 'telegram_id' => $telegram_user_id, 'plugin_post_id' => $plugin_post_id, 'url' => $url );
-  
-  $wpdb->insert(
-   $wpdb->prefix . 'your_table_name_that_must_already_exist', $arr, array( '%s' )
-  );
-
-  //Or save it as custom field and use it for a Finite State Machine
-  update_post_meta( $plugin_post_id, 'telegram_custom_last_photo_received', $url );
-
-  telegram_sendmessage( $telegram_user_id, 'Photo received. Thank you!');
-}
-
-?>`
-
-Another example, that is a "emergency bot" created for the mid-italy earthquake (24 august 2016) is available on [GitHub](https://github.com/milesimarco/terremotocentroitalia-bot-telegram/)
+= Can I extend the plugin? =
+Yes! Use WordPress hooks and filters to add custom commands, keyboards, and integrations. See the FAQ and code comments for examples.
 
 == Screenshots ==
-1. Plugin dashboard
+1. Modern dashboard with stats and recent activity
 2. Subscribers list
-3. Commands list
-4. Autoresponders
-5. Zapier integration
-6. plugin options
-7. Dynamic repliles and inline buttons example from [IcBrendola_bot](http://telegram.me/IcBrendola_bot)
-8. Keyboard example from [CosenzApp_bot](http://telegram.me/CosenzApp_bot)
-9. Post broadcasting (all post types)
-10. Native Gutenberg support
+3. Commands and autoresponders
+4. Zapier integration
+5. Plugin settings with tabs
+6. Dynamic replies and inline buttons
+7. Keyboard example
+8. Post broadcasting
+9. Native Gutenberg support
 
 == Changelog ==
 
-= 3.8 2024-07-01 =
-
-* [IMPROVE] Redesigned settings page with old settings cleanup
-* [IMPROVE] Better Zapier handling
-* [IMPROVE] Minor changes, code cleanup, security hardening and optimizations
-
-= 3.7 20231020 =
-* [NEW] Added ability to selectively send message to subscribed groups
-* [BUGFIX] Fixed critical bug when sending to groups
-* [BUGFIX] Minor changes and optimizations
-* [NEW] Github deploy flow setup - https://github.com/WPGov/telegram-bot
+= 4.0 20250526 =
+* [SECURITY] Added CSRF protection (WordPress nonces) to all sensitive actions (log clear, send message, etc.)
+* [SECURITY] Hardened webhook and Zapier endpoints, removed BotPress.org fallback (now only Telegram WebHooks are supported)
+* [SECURITY] Improved admin access checks and output escaping throughout the plugin
+* [IMPROVE] Redesigned all admin pages for a modern, user-friendly experience (dashboard, log, send message, settings)
+* [IMPROVE] Settings page now uses tabs for easier navigation and clarity
+* [IMPROVE] Removed all BotPress.org logic and references (service discontinued, SSL is now required)
+* [IMPROVE] Inlined and refactored plugin defaults (removed defaults.php)
+* [IMPROVE] Refactored admin notices for maintainability
+* [IMPROVE] Enhanced log panel with better design and empty state
+* [IMPROVE] Enhanced dashboard with stats, recent activity, and quick actions
+* [IMPROVE] Improved send message panel with modern UI
+* [IMPROVE] Cleaned up and secured Zapier integration
+* [IMPROVE] General code cleanup, improved maintainability and best practices
+* [IMPROVE] Updated documentation and removed outdated references
+* [DEPRECATED] Removed all support for BotPress.org and non-SSL fallback
+* [NOTE] This is a major update. Please review your settings and test your integration after updating.
 
 = 3.6.3 20230527 =
 * [BUGFIX] Minor changes

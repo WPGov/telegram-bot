@@ -89,8 +89,8 @@ add_action('init', function() {
         'capability_type' => 'post'
     );
     if ( defined('WP_DEBUG') && false === WP_DEBUG) {
-        $args['capabilities'] = array( 'create_posts' => 'false' );
-        $args['map_meta_cap'] = true;
+        $args['capabilities'] = array( 'create_posts' => 'do_not_allow' );
+        $args['map_meta_cap'] = false;
     }
     $args = apply_filters('telegram_groups_register_capabilities', $args ); 
     register_post_type('telegram_groups', $args);
