@@ -1,7 +1,7 @@
 === Telegram Bot & Channel ===
-Contributors: Milmor, marcomilesi
-Version: 4.0
-Stable tag: 4.0
+Contributors: Milmor
+Version: 4.0.1
+Stable tag: 4.0.1
 Author: Marco Milesi
 Author URI: https://profiles.wordpress.org/milmor/
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=F2JK36SCXKTE2
