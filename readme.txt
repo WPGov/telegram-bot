@@ -1,7 +1,7 @@
 === Telegram Bot & Channel ===
 Contributors: Milmor
-Version: 4.0.1
-Stable tag: 4.0.1
+Version: 4.1
+Stable tag: 4.1
 Author: Marco Milesi
 Author URI: https://profiles.wordpress.org/milmor/
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=F2JK36SCXKTE2
@@ -101,6 +101,11 @@ Yes! Use WordPress hooks and filters to add custom commands, keyboards, and inte
 9. Native Gutenberg support
 
 == Changelog ==
+
+= 4.1 - 2025-08-29 =
+* [IMPROVE] Added "Disable Log" option in the Advanced settings tab.
+* [IMPROVE] Improved the structure of the settings page:
+* [BUGFIX] Minor changes
 
 = 4.0 20250526 =
 * [SECURITY] Added CSRF protection (WordPress nonces) to all sensitive actions (log clear, send message, etc.)
