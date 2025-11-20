@@ -3,7 +3,7 @@
 Plugin Name:  Telegram Bot & Channel
 Plugin URI:  https://wordpress.org/plugins/telegram-bot/
 Description: Broadcast your content to Telegram, build interactive bots and boost your omnichannel customer experience
-Version: 4.1
+Version: 4.1.1
 Author: Marco Milesi
 Author URI: https://www.marcomilesi.com
 Contributors: Milmor

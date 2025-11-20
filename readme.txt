@@ -1,14 +1,14 @@
 === Telegram Bot & Channel ===
 Contributors: Milmor
-Version: 4.1
-Stable tag: 4.1
+Version: 4.1.1
+Stable tag: 4.1.1
 Author: Marco Milesi
 Author URI: https://profiles.wordpress.org/milmor/
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=F2JK36SCXKTE2
 Tags: telegram, bot, newsletter, channel, group, broadcast, automation, notifications, autoresponder, webhook, ssl, zapier, integration, marketing, customer-engagement, chatbot, wordpress, classicpress
 Requires at least: 4.6
 Requires PHP: 7.0
-Tested up to: 6.9
+Tested up to: 7.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -101,6 +101,10 @@ Yes! Use WordPress hooks and filters to add custom commands, keyboards, and inte
 9. Native Gutenberg support
 
 == Changelog ==
+
+= 4.1.1 - 2025-11-20 =
+* [BUGFIX] Security improvements
+* [BUGFIX] Minor changes
 
 = 4.1 - 2025-08-29 =
 * [IMPROVE] Added "Disable Log" option in the Advanced settings tab.

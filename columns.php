@@ -46,14 +46,14 @@
         global $post;
         switch ($column) {
             case 'name':
-                printf(get_post_meta($post_id, 'telegram_name', true));
+                echo esc_html(get_post_meta($post_id, 'telegram_name', true));
                 break;
             case 'user_name':
-                echo '<a class="row-title" href="'.get_edit_post_link( $post_id ).'">'.get_post_meta($post_id, 'telegram_first_name', true) . ' ' . get_post_meta($post_id, 'telegram_last_name', true).'</a>';
+                echo '<a class="row-title" href="'.esc_url(get_edit_post_link( $post_id )).'">'.esc_html(get_post_meta($post_id, 'telegram_first_name', true) . ' ' . get_post_meta($post_id, 'telegram_last_name', true)).'</a>';
                 break;
             case 'username':
                 if ( get_post_meta($post_id, 'telegram_username', true) ) {
-                    echo '<code>'.get_post_meta($post_id, 'telegram_username', true).'</code>';
+                    echo '<code>'.esc_html(get_post_meta($post_id, 'telegram_username', true)).'</code>';
                 }
                 break;
             case 'activity':

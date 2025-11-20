@@ -49,13 +49,13 @@
 			'post_author' => 1,
 		));
 		if ( $PRIVATE ) {
-			update_post_meta($p, 'telegram_first_name', $data['message']['from']['first_name']);
-			update_post_meta($p, 'telegram_last_name', $data['message']['from']['last_name']);
-			update_post_meta($p, 'telegram_username', $data['message']['from']['username']);
+			update_post_meta($p, 'telegram_first_name', sanitize_text_field($data['message']['from']['first_name']));
+			update_post_meta($p, 'telegram_last_name', sanitize_text_field($data['message']['from']['last_name']));
+			update_post_meta($p, 'telegram_username', sanitize_text_field($data['message']['from']['username']));
 			telegram_sendmessage( $USERID, telegram_option('wmuser') );
 		} else if ( $GROUP ) {
-			update_post_meta($p, 'telegram_name', $data['message']['chat']['title']);
-			telegram_log('', '', 'Bot added to <strong>'.$data['message']['chat']['title'].'</strong>');
+			update_post_meta($p, 'telegram_name', sanitize_text_field($data['message']['chat']['title']));
+			telegram_log('', '', 'Bot added to <strong>'.esc_html($data['message']['chat']['title']).'</strong>');
             telegram_sendmessage( $USERID, telegram_option('wmgroup') );
 		}
 		return;
@@ -64,14 +64,14 @@
 		$fieldsToCheck = [ 'first_name', 'last_name', 'username' ];
 		foreach( $fieldsToCheck as $field ) {
 			if ( get_post_meta( $POST_ID, 'telegram_'.$field, true ) != $data['message']['from'][$field] ) {
-				update_post_meta( $POST_ID, 'telegram_'.$field, $data['message']['from'][$field]);
+				update_post_meta( $POST_ID, 'telegram_'.$field, sanitize_text_field($data['message']['from'][$field]));
 			}
 		}
 		$counter = get_post_meta($POST_ID, 'telegram_counter', true);
 		$counter = $counter ? ++$counter : 1;
 		update_post_meta( $POST_ID, 'telegram_counter', $counter );
 	} else if ($GROUP) {
-		update_post_meta($o->ID, 'telegram_name', $data['message']['chat']['title']);
+		update_post_meta($o->ID, 'telegram_name', sanitize_text_field($data['message']['chat']['title']));
 	}
 
     if ( isset( $data['message']['location'] ) ) {
@@ -137,7 +137,6 @@
 		telegram_log('', '', 'Bot removed from <strong>'.$data['message']['chat']['title'].'</strong>');
 	}
     if ( $PRIVATE && !$ok_found ) {
-         telegram_sendmessage( $USERID, telegram_option('emuser') );
+        telegram_sendmessage( $USERID, telegram_option('emuser') );
     }
-
 ?>
