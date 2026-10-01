@@ -3,7 +3,7 @@
 Plugin Name:  Telegram Bot & Channel
 Plugin URI:  https://wordpress.org/plugins/telegram-bot/
 Description: Broadcast your content to Telegram, build interactive bots and boost your omnichannel customer experience
-Version: 4.1.1
+Version: 4.2
 Author: Marco Milesi
 Author URI: https://www.marcomilesi.com
 Contributors: Milmor
@@ -167,14 +167,18 @@ add_action('template_redirect', function(){
         status_header( 200 );
 		require 'parse.php';
 	} else if ( isset( $_GET['zap'] ) && $wp_query->query['zap']) {
-        if ($_GET['zap'] == get_option('wp_telegram_apikey') && telegram_option('zapier')) {
+        $apikey = (string) get_option('wp_telegram_apikey');
+        if ( $apikey !== '' && is_string( $_GET['zap'] ) && hash_equals( $apikey, $_GET['zap'] ) && telegram_option('zapier') ) {
             status_header( 200 );
             $json = file_get_contents('php://input');
             if (!$json) {
                 return;
             }
             $data = (array) json_decode($json, TRUE);
-            telegram_log('------>', 'ZAPIER', json_encode((array) file_get_contents("php://input")));
+            if ( empty( $data['hook'] ) || !is_string( $data['hook'] ) ) {
+                return;
+            }
+            telegram_log('------>', 'ZAPIER', json_encode((array) $json));
             telegram_sendmessagetoall($data['hook']);
         }
 	}
@@ -530,11 +534,21 @@ function telegram_download_file( $telegram_user_id, $file_id, $directory = '' ) 
 	}
 
 	$data = (array)json_decode($response, TRUE);
+	if ( empty( $data['result']['file_path'] ) ) {
+		return false;
+	}
 	$plugin_post_id = telegram_getid( $telegram_user_id );
 	$remote_url =  'https://api.telegram.org/file/bot'.telegram_option('token').'/'.$data['result']['file_path'];
-	$local_dir = $local_url = ABSPATH.'wp-content/uploads/telegram-bot/'.$plugin_post_id.$directory;
-	$ext = pathinfo($remote_url, PATHINFO_EXTENSION);
-	$file_name = time().'.'.$ext;
+	$ext = strtolower( pathinfo($remote_url, PATHINFO_EXTENSION) );
+	// Only save file types allowed by WordPress (never .php, .phtml, .html...)
+	$filetype = wp_check_filetype( 'file.'.$ext );
+	if ( !$ext || !$filetype['ext'] ) {
+		telegram_log('####', $telegram_user_id, 'Incoming file rejected: file type not allowed ('.sanitize_file_name($ext).')');
+		return false;
+	}
+	$upload_dir = wp_upload_dir();
+	$local_dir = $upload_dir['basedir'].'/telegram-bot/'.$plugin_post_id.$directory;
+	$file_name = time().'.'.$filetype['ext'];
 	$local_url = $local_dir.'/'.$file_name;
 	if ( !copy( $remote_url, $local_url) ) {
 		mkdir( $local_dir, 0755, true);
@@ -547,7 +561,7 @@ function telegram_download_file( $telegram_user_id, $file_id, $directory = '' ) 
 		}
 	} else {
 		telegram_log('', $telegram_user_id, 'Received and saved image');
-		return get_site_url() . '/wp-content/uploads/telegram-bot/'.$plugin_post_id.'/'.$file_name;
+		return $upload_dir['baseurl'] . '/telegram-bot/'.$plugin_post_id.'/'.$file_name;
 	}
 }
 

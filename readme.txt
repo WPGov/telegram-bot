@@ -1,106 +1,115 @@
 === Telegram Bot & Channel ===
 Contributors: Milmor
-Version: 4.1.1
-Stable tag: 4.1.1
-Author: Marco Milesi
-Author URI: https://profiles.wordpress.org/milmor/
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=F2JK36SCXKTE2
-Tags: telegram, bot, newsletter, channel, group, broadcast, automation, notifications, autoresponder, webhook, ssl, zapier, integration, marketing, customer-engagement, chatbot, wordpress, classicpress
+Tags: telegram, bot, channel, broadcast, notifications
 Requires at least: 4.6
+Tested up to: 7.2
 Requires PHP: 7.0
-Tested up to: 7.0
+Stable tag: 4.2
 License: GPLv2 or later
-License URI: http://www.gnu.org/licenses/gpl-2.0.html
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Supercharge your WordPress site with Telegram! Broadcast posts, automate notifications, and build interactive bots for your users, groups, and channels. Secure, modern, and easy to use. Zapier integration included!
+Broadcast posts to Telegram channels, groups and subscribers, and build interactive bots with autoresponders, keyboards and Zapier.
 
 == Description ==
 
-**Telegram Bot & Channel** is the all-in-one solution to connect your WordPress site with Telegram. Instantly broadcast posts, automate notifications, and create interactive bots for your audience. No coding required!
+**Telegram Bot & Channel** connects your WordPress site to Telegram. Publish a post and your channel, groups and bot subscribers get it instantly; set up autoresponders and keyboards to turn your bot into a small interactive app, no coding required.
 
-**Key Features:**
-- 🤖 **Bot builder:** Create interactive autoresponders for users and groups
-- 📣 **Broadcast:** Send posts, pages, or custom messages to your channels, groups, and subscribers
-- 🔔 **Automated notifications:** Instantly notify your audience about new content
-- 🔗 **Zapier integration:** Connect Telegram with 400+ apps and automate your workflows
-- 🔐 **Secure:** All connections use Telegram WebHooks and require SSL for maximum security
-- 🛡️ **Modern UI:** Clean, user-friendly admin panels with stats, logs, and quick actions
+= Key features =
 
-**Why choose this plugin?**
-- 100% free and open source
-- No third-party servers: your data stays on your site
-- Easy setup: just add your bot token and go
-- Developer-friendly: extend with custom PHP actions and filters
+* 📣 **Broadcast** – send posts, pages or custom messages to channels, groups, supergroups and bot subscribers
+* ⏰ **Automatic notifications** – new and scheduled posts are sent on publish, using a configurable template
+* 🤖 **Responders** – unlimited commands and autoresponders, with custom keyboards and inline buttons
+* ✍️ **Block editor support** – choose whether and where to send directly from the post sidebar
+* 👥 **Subscribers & groups** – list, edit and message your users, with per-user activity counters
+* 📍 **Location-aware replies** – Haversine helpers to answer based on the user's position
+* 🔗 **Zapier** – connect Telegram with thousands of apps (RSS, Google Sheets, social networks and more)
+* 🧩 **Widget** – let visitors join your bot or channel from the sidebar
+* 🛠️ **Developer friendly** – PHP functions, actions and filters to extend everything
 
-== Features ==
+= Privacy & security =
 
-**Bot & Broadcast:**
-- Send posts, pages, or custom messages with flexible templates
-- Schedule broadcasts for future posts
-- Use custom keyboards and inline buttons for rich user interaction
-- Broadcast to users, groups, supergroups, and channels
-- Unlimited autoresponders and command triggers
-- View insights about your Telegram audience
-- Haversine algorithm for geo-targeted content
-- Create custom applications with command variables
+* Your data stays on your site: the plugin talks only to the Telegram Bot API (and Zapier, if you enable it)
+* Messages are received through secure Telegram WebHooks (HTTPS required)
+* All admin actions are protected by capability checks and WordPress nonces
+* Activity logging can be disabled from the Advanced settings
 
-**Zapier & Automation:**
-- Connect Telegram to 400+ apps (RSS, Instagram, Google Sheets, and more)
-- Automate news, weather, social, and IoT notifications
-- Easy Zapier invite and setup
+= Open source =
 
-**Security & Privacy:**
-- All actions protected by WordPress nonces (CSRF protection)
-- Only supports secure Telegram WebHooks (SSL required)
-- No data sent to third-party servers (except optional Zapier integration)
-
-**Screenshots:**
-1. Modern dashboard with stats and recent activity
-2. Subscribers list
-3. Commands and autoresponders
-4. Zapier integration
-5. Plugin settings with tabs
-6. Dynamic replies and inline buttons
-7. Keyboard example
-8. Post broadcasting
-9. Native Gutenberg support
+Free, GPL licensed and developed on GitHub: [github.com/WPGov/telegram-bot](https://github.com/WPGov/telegram-bot). Bug reports and pull requests are welcome!
 
 == Installation ==
-1. Upload the `telegram-bot` directory to `/wp-content/plugins/`
-2. Activate the plugin in the WordPress admin
-3. Go to the Telegram settings page
-4. Enter your bot token and configure your preferences
-5. Enjoy automated Telegram notifications and bot features!
+
+1. Install the plugin from **Plugins → Add New** (or upload the `telegram-bot` folder to `/wp-content/plugins/`) and activate it.
+2. Create a bot with [@BotFather](https://t.me/BotFather) and copy its token.
+3. Go to **Telegram → Settings**, paste the token and save: the WebHook is configured automatically.
+4. To broadcast to a channel, add your bot as an administrator of the channel and enter its `@username` in the settings.
+5. Publish a post, or use **Telegram → Broadcast** to send a custom message.
 
 == Frequently Asked Questions ==
 
 = How do I create a Telegram bot? =
-Visit [Telegram’s BotFather](https://core.telegram.org/bots#botfather) and follow the instructions to create a new bot and get your token.
+Open [@BotFather](https://t.me/BotFather) in Telegram, send `/newbot` and follow the instructions. You will receive the token to paste in the plugin settings. More info in the [official documentation](https://core.telegram.org/bots/features#botfather).
 
 = How do users subscribe? =
-Users can start your bot or join your channel/group where the bot is an admin.
-
-= How do I enable Zapier integration? =
-Enable Zapier in the plugin settings and follow the invite link for setup instructions.
+Users subscribe by starting your bot (`/start`). Groups are registered when the bot is added to them. Channel members are managed by Telegram itself: the bot only needs to be an administrator of the channel.
 
 = Is SSL required? =
-Yes, Telegram WebHooks require SSL. Your site must use HTTPS for the plugin to work.
+Yes. Telegram only delivers WebHooks to HTTPS URLs, so your site must use a valid SSL certificate. Sending messages works anyway, but the bot can't receive messages without HTTPS (e.g. on localhost).
 
-= Can I extend the plugin? =
-Yes! Use WordPress hooks and filters to add custom commands, keyboards, and integrations. See the FAQ and code comments for examples.
+= My bot doesn't answer. What can I check? =
+Make sure your site is reachable over HTTPS, then check **Telegram → Dashboard** and the log for errors. Caching or firewall plugins may block the WebHook endpoint: in that case exclude the WebHook endpoint shown in **Telegram → Settings** from cache and firewall rules.
+
+= How do I enable Zapier integration? =
+Enable Zapier in the plugin settings and follow the invite link to set up your Zaps.
+
+= Can I send messages from my own code? =
+Yes. A few examples:
+
+`telegram_sendmessage( $chat_id, 'Hello!' );`
+`telegram_sendmessagetoall( 'Message for everyone' );`
+`telegram_sendmessage_channel( 'Message for the channel' );`
+
+Custom keyboards can be built with `telegram_build_reply_markup()` and passed as third parameter of `telegram_sendmessage()`.
+
+= Which hooks are available? =
+Actions: `telegram_parse`, `telegram_parse_location`, `telegram_parse_photo`, `telegram_parse_document`, `telegram_send_post_before`, `telegram_send_post`.
+Filters: `telegram_get_reply_markup_filter`, `telegram_subscribers_register_capabilities`, `telegram_groups_register_capabilities`.
+
+Example: reply to a custom command.
+
+`add_action( 'telegram_parse', function( $user_id, $text ) {
+    if ( $text === '/ping' ) {
+        telegram_sendmessage( $user_id, 'pong' );
+    }
+}, 10, 2 );`
 
 == Screenshots ==
-1. Modern dashboard with stats and recent activity
+
+1. Dashboard with stats and recent activity
 2. Subscribers list
 3. Commands and autoresponders
 4. Zapier integration
-5. Plugin settings with tabs
+5. Settings page with tabs
 6. Dynamic replies and inline buttons
-7. Keyboard example
+7. Custom keyboard example
 8. Post broadcasting
-9. Native Gutenberg support
+9. Block editor (Gutenberg) integration
 
 == Changelog ==
+
+= 4.2 - 2026-10-01 =
+* [NOTE] The `telegram_parse` action now receives an empty string instead of `null` for messages without text
+* [NOTE] `telegram_download_file()` rejects file types not allowed by WordPress (e.g. .php, .html, .tgs, .json); use the `upload_mimes` filter to allow more
+* [NOTE] `telegram_download_file()` now saves to the uploads folder returned by `wp_upload_dir()`: on multisite or with a custom uploads path, new files go to a different folder (existing files are not moved)
+* [SECURITY] Incoming files are saved only if their type is allowed by WordPress
+* [SECURITY] Zapier key is now checked with a timing-safe comparison
+* [BUGFIX] Group names are updated again when they change
+* [BUGFIX] Inline button clicks no longer clear the subscriber's name and username
+* [BUGFIX] Location messages no longer cause warnings when no "telegram-location" responder exists
+* [BUGFIX] PHP 8 warnings when receiving updates without text or callback data
+* [IMPROVE] Tested up to WordPress 7.2
+* [IMPROVE] Refreshed readme, FAQ and developer documentation
 
 = 4.1.1 - 2025-11-20 =
 * [BUGFIX] Security improvements
@@ -470,3 +479,8 @@ Yes! Use WordPress hooks and filters to add custom commands, keyboards, and inte
 
 = 0.1 - 07.09.2015 =
 * First Commit
+
+== Upgrade Notice ==
+
+= 4.2 =
+Security and bug fixes. Developers: telegram_download_file() now rejects file types not allowed by WordPress and uses wp_upload_dir(); telegram_parse receives '' instead of null. See the changelog.
