@@ -84,7 +84,7 @@
 	}
 
     if ( isset( $data['message']['location'] ) ) {
-        $page = get_page_by_title( 'telegram-location', '', 'telegram_commands' );
+        $page = telegram_get_post_by_title( 'telegram-location', 'telegram_commands' );
         update_post_meta( telegram_getid( $USERID ), 'telegram_last_latitude', $data['message']['location']['latitude']);
         update_post_meta( telegram_getid( $USERID ), 'telegram_last_longitude', $data['message']['location']['longitude']);
         if ( $page ) {
@@ -104,10 +104,9 @@
 
     $ok_found = false;
     if ( $COMMAND != '' ) {
-        query_posts('post_type=telegram_commands&posts_per_page=-1');
-        while (have_posts()):
-            the_post();
-            $lowertitle = strtolower(  get_the_title() );
+        $commands = get_posts( array( 'post_type' => 'telegram_commands', 'numberposts' => -1 ) );
+        foreach ( $commands as $command ):
+            $lowertitle = strtolower(  get_the_title( $command ) );
             $lowermessage = strtolower( $COMMAND );
             if (
                 ( $lowertitle == $lowermessage )
@@ -118,16 +117,16 @@
                ) {
                 $ok_found = true;
 
-                if ( has_post_thumbnail( get_the_id() ) ) {
-                    $image = wp_get_attachment_image_src( get_post_thumbnail_id(), 'medium', true );
-                    telegram_sendphoto( $USERID, get_the_id(), $image[0] );
+                if ( has_post_thumbnail( $command->ID ) ) {
+                    $image = wp_get_attachment_image_src( get_post_thumbnail_id( $command->ID ), 'medium', true );
+                    telegram_sendphoto( $USERID, $command->ID, $image[0] );
                 }
                 else {
-                    telegram_sendmessage( $USERID, get_the_id() );
+                    telegram_sendmessage( $USERID, $command->ID );
                 }
             }
 
-        endwhile;
+        endforeach;
     }
 
 	if ( $PRIVATE ) {
@@ -139,7 +138,6 @@
 			    break;
 			default:
 			    break;
-			return;
 		}
 	}
 

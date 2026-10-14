@@ -208,8 +208,10 @@ function telegram_on_post_scheduled( $ID, $post ) {
 
     // Posts future publishing
     if ( isset($_POST['telegram_m_send'] ) ) {
-        telegram_log( '', 'future', 'Post ID '.$ID.' programmed for broadcast with target '.$_POST['telegram_m_send_target']);
-        update_post_meta( $ID, 'telegram_future_publish', $_POST['telegram_m_send_target'].$_POST['telegram_m_send_content'] );
+        $target = isset( $_POST['telegram_m_send_target'] ) ? absint( $_POST['telegram_m_send_target'] ) : 0;
+        $content = isset( $_POST['telegram_m_send_content'] ) ? wp_kses_post( $_POST['telegram_m_send_content'] ) : '';
+        telegram_log( '', 'future', 'Post ID '.$ID.' programmed for broadcast with target '.$target);
+        update_post_meta( $ID, 'telegram_future_publish', $target.$content );
         return;
     } else if ( get_post_meta( $ID, 'telegram_future_publish', true ) ) {
         delete_post_meta( $ID, 'telegram_future_publish' );
@@ -312,7 +314,7 @@ function telegram_send_post_notification( $ID, $post ) {
             $send_parameters, $ID, $post
         );
 
-        $meta_target = $_POST["telegram_m_send_target"];
+        $meta_target = isset( $_POST['telegram_m_send_target'] ) ? absint( $_POST['telegram_m_send_target'] ) : 0;
         $meta_target = ( $meta_target ? $meta_target : telegram_option('target') );
 
         switch( $meta_target ) {
@@ -412,7 +414,7 @@ add_action( 'post_submitbox_misc_actions', function ($post) {
             <input type="checkbox" value="1"'.$checked.' name="telegram_m_send" id="telegram_m_send" /> '.__('Send to Telegram', 'telegram-bot').'<img src="' .plugins_url('img/telegramicon.png',__FILE__). '" style="width:16px;position:absolute;padding:0 5px;" />'.$scheduled.'
         </label>
         <div id="telegram_m">
-        <textarea name="telegram_m_send_content" id="telegram_m_send_content" rows="4" style="width: 100%;margin-top: 5px;">'.$template.'</textarea>
+        <textarea name="telegram_m_send_content" id="telegram_m_send_content" rows="4" style="width: 100%;margin-top: 5px;">'.esc_textarea( $template ).'</textarea>
         ';?>
         <small>
         <?php

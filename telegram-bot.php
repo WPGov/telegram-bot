@@ -3,7 +3,7 @@
 Plugin Name:  Telegram Bot & Channel
 Plugin URI:  https://wordpress.org/plugins/telegram-bot/
 Description: Broadcast your content to Telegram, build interactive bots and boost your omnichannel customer experience
-Version: 4.2
+Version: 4.2.1
 Author: Marco Milesi
 Author URI: https://www.marcomilesi.com
 Contributors: Milmor
@@ -235,14 +235,14 @@ function telegram_parsetext($text, $type, $chat_id) {
 
     $text = str_replace('%CHAT_ID%', $chat_id, $text);
 
-    $o = get_page_by_title( $chat_id, OBJECT, 'telegram_subscribers');
+    $o = telegram_get_post_by_title( $chat_id, 'telegram_subscribers' );
     if ($o) {
         $text = str_replace('%FIRST_NAME%', get_post_meta($o->ID, 'telegram_first_name', true), $text);
         $text = str_replace('%LAST_NAME%', get_post_meta($o->ID, 'telegram_last_name', true), $text);
         $text = str_replace('%LOCATION_LATITUDE%', get_post_meta($o->ID, 'telegram_last_latitude', true), $text);
         $text = str_replace('%LOCATION_LONGITUDE%', get_post_meta($o->ID, 'telegram_last_longitude', true), $text);
     } else {
-        $o = get_page_by_title( $chat_id, OBJECT, 'telegram_groups');
+        $o = telegram_get_post_by_title( $chat_id, 'telegram_groups' );
         if ($o) {
             $text = str_replace('%FIRST_NAME%', get_post_meta($o->ID, 'telegram_name', true), $text);
             $text = str_replace('%LAST_NAME%', get_post_meta($o->ID, '', true), $text);
@@ -482,10 +482,24 @@ add_filter('enter_title_here', function($input) {
 	return $input;
 } );
 
+function telegram_get_post_by_title( $title, $post_type ) {
+    $posts = get_posts( array(
+        'post_type'              => $post_type,
+        'title'                  => $title,
+        'post_status'            => 'all',
+        'numberposts'            => 1,
+        'orderby'                => 'post_date ID',
+        'order'                  => 'ASC',
+        'update_post_term_cache' => false,
+        'update_post_meta_cache' => false,
+    ) );
+    return $posts ? $posts[0] : null;
+}
+
 function telegram_getid($title) {
-    $page = get_page_by_title( $title, OBJECT, 'telegram_subscribers' );
+    $page = telegram_get_post_by_title( $title, 'telegram_subscribers' );
 	if (!$page) {
-		$page = get_page_by_title( $title, OBJECT, 'telegram_groups' );
+		$page = telegram_get_post_by_title( $title, 'telegram_groups' );
 	}
     if ( $page ) {
         return $page->ID;
@@ -553,16 +567,13 @@ function telegram_download_file( $telegram_user_id, $file_id, $directory = '' ) 
 	if ( !copy( $remote_url, $local_url) ) {
 		mkdir( $local_dir, 0755, true);
 		if ( !copy( $remote_url, $local_url) ) {
-			telegram_log('', $telegram_user_id, 'Cannot write file image from '.$remove_url.' to '.$local_url);
-			return false;
-		} else {
-			telegram_log('', $telegram_user_id, 'Directory created for incoming image');
+			telegram_log('', $telegram_user_id, 'Cannot write file image from '.$remote_url.' to '.$local_url);
 			return false;
 		}
-	} else {
-		telegram_log('', $telegram_user_id, 'Received and saved image');
-		return $upload_dir['baseurl'] . '/telegram-bot/'.$plugin_post_id.'/'.$file_name;
+		telegram_log('', $telegram_user_id, 'Directory created for incoming image');
 	}
+	telegram_log('', $telegram_user_id, 'Received and saved image');
+	return $upload_dir['baseurl'] . '/telegram-bot/'.$plugin_post_id.$directory.'/'.$file_name;
 }
 
 add_action('widgets_init', function() {

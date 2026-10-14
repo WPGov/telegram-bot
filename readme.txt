@@ -5,7 +5,7 @@ Tags: telegram, bot, channel, broadcast, notifications
 Requires at least: 4.6
 Tested up to: 7.2
 Requires PHP: 7.0
-Stable tag: 4.2
+Stable tag: 4.2.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -86,17 +86,26 @@ Example: reply to a custom command.
 
 == Screenshots ==
 
-1. Dashboard with stats and recent activity
-2. Subscribers list
-3. Commands and autoresponders
-4. Zapier integration
-5. Settings page with tabs
-6. Dynamic replies and inline buttons
-7. Custom keyboard example
-8. Post broadcasting
-9. Block editor (Gutenberg) integration
+1. Send to Telegram from the block editor
+2. A post broadcast to a Telegram channel
+3. Interactive bot with commands, inline buttons and custom keyboard
+4. Plugin dashboard
+5. Subscribers list
+6. Commands and autoresponders
+7. Editing a command with its keyboard
+8. General settings
+9. Interactive bot settings
+10. Broadcast a message to users, groups and channel
 
 == Changelog ==
+
+= 4.2.1 - 2026-10-14 =
+* [SECURITY] Scheduled broadcast target and message are sanitized and escaped
+* [BUGFIX] `telegram_download_file()` returned `false` for the first file of each user; the returned URL now includes `$directory`
+* [BUGFIX] Replaced deprecated `get_page_by_title()` (notices on WordPress 6.2+)
+* [IMPROVE] Command lookup no longer alters the main query
+* [IMPROVE] Code cleanup
+* [IMPROVE] New screenshots
 
 = 4.2 - 2026-10-01 =
 * [NOTE] The `telegram_parse` action now receives an empty string instead of `null` for messages without text
@@ -481,6 +490,9 @@ Example: reply to a custom command.
 * First Commit
 
 == Upgrade Notice ==
+
+= 4.2.1 =
+Bug fixes: first incoming file of each user is saved and returned correctly, no more deprecation notices on WordPress 6.2+.
 
 = 4.2 =
 Security and bug fixes. Developers: telegram_download_file() now rejects file types not allowed by WordPress and uses wp_upload_dir(); telegram_parse receives '' instead of null. See the changelog.
