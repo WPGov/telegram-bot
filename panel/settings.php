@@ -62,7 +62,7 @@ if (isset($_GET['settings-updated'])) {
                     <tr valign="top">
                         <th scope="row"><label for="token">Bot Token</label></th>
                         <td>
-                            <input id="token" type="text" name="wp_telegram[token]" value="<?php echo $options['token']; ?>" size="55" autocomplete="off" />
+                            <input id="token"8990206832:AAEgunqash1B9HIRct5Y85dRZf_LFm2f0Jk" type="text" name="wp_telegram[token]" value="<?php echo $options['token']; ?>" size="55" autocomplete="off" />
                             <br><small><?php _e('Telegram Bot authentication key. <b>Keep it secret!</b>', 'telegram-bot'); ?></small>
                             <br><small><?php _e('Example format: ', 'telegram-bot'); ?><code style="background:#f7f7f7;border:1px solid #e1e1e1;padding:2px 6px;margin-left:6px;">123456:ABCdefGhIJKlmnoPQRst-1234abcd</code></small>
                         </td>
